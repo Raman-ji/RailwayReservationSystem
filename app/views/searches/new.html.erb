@@ -1,0 +1,14 @@
+<h2> Search</h2>
+<%= form_with url: "/search", method: :get do |form| %>
+  <%= form.label :from, "From:" %>
+  <%= form.select :from, ["Indore", "Gwalior", "Dewas", "Ujjain", "Shivpuri", "Guna", "Morena", "Bhind", "Agra", "Virndavan"] %>
+
+  <%= form.label :to, "To:" %>
+  <%= form.select :to, ["Indore", "Gwalior", "Dewas", "Ujjain", "Shivpuri", "Guna", "Morena", "Bhind", "Agra", "Virndavan"] %>
+ 
+  <%= form.label :date, "Date:"%>
+  <%= form.date_field :date %>
+
+   <%= form.submit "Search" %>
+
+<% end %>
