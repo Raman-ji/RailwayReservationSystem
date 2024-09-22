@@ -1,0 +1,33 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  train_code: 1
+  from: MyString
+  to: MyString
+  day: MyString
+  departure_time: 2024-09-22 16:27:39
+  arrival_time: 2024-09-22 16:27:39
+  distance_km: 1
+  travel_time_hrs: 1
+  class_2a_count: 1
+  class_2a_price: 1
+  class_1a_count: 1
+  class_1a_price: 1
+  class_general_count: 1
+  class_general_price: 1
+
+two:
+  train_code: 1
+  from: MyString
+  to: MyString
+  day: MyString
+  departure_time: 2024-09-22 16:27:39
+  arrival_time: 2024-09-22 16:27:39
+  distance_km: 1
+  travel_time_hrs: 1
+  class_2a_count: 1
+  class_2a_price: 1
+  class_1a_count: 1
+  class_1a_price: 1
+  class_general_count: 1
+  class_general_price: 1
