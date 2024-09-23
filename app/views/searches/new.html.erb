@@ -1,13 +1,13 @@
 <h2> Search</h2>
-<%= form_with url: "/search", method: :get do |form| %>
-  <%= form.label :from, "From:" %>
-  <%= form.select :from, ["Indore", "Gwalior", "Dewas", "Ujjain", "Shivpuri", "Guna", "Morena", "Bhind", "Agra", "Virndavan"] %>
+<%= form_with url: train_details_path, method: :get do |form| %>
+  <%= form.label :from, "From: *" %>
+  <%= form.select :from, Search.order(:city).pluck(:city),{ }, { required: true} %>
 
-  <%= form.label :to, "To:" %>
-  <%= form.select :to, ["Indore", "Gwalior", "Dewas", "Ujjain", "Shivpuri", "Guna", "Morena", "Bhind", "Agra", "Virndavan"] %>
+  <%= form.label :to, "To: *" %>  
+  <%= form.select :to, Search.order(:city).pluck(:city), { }, {required: true} %>
  
-  <%= form.label :date, "Date:"%>
-  <%= form.date_field :date %>
+  <%= form.label :date, "Date: *"%>
+  <%= form.date_field :date , required: true %>
 
    <%= form.submit "Search" %>
 

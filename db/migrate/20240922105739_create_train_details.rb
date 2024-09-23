@@ -1,7 +1,7 @@
 class CreateTrainDetails < ActiveRecord::Migration[7.1]
   def change
     create_table :train_details do |t|
-      t.integer :train_code
+      t.string :train_code
       t.string :from
       t.string :to
       t.string :day
