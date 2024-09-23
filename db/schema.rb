@@ -21,7 +21,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_23_120956) do
     t.string "train_code"
     t.string "from"
     t.string "to"
-    t.string "days"
+    t.text "days"
     t.datetime "departure_time"
     t.datetime "arrival_time"
     t.integer "distance_km"

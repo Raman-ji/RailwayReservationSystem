@@ -4,7 +4,7 @@ class CreateTrainDetails < ActiveRecord::Migration[7.1]
       t.string :train_code
       t.string :from
       t.string :to
-      t.string :day
+      t.text :day
       t.datetime :departure_time
       t.datetime :arrival_time
       t.integer :distance_km
