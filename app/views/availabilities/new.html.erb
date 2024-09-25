@@ -1,0 +1,35 @@
+<%# <% finding availabilites if not existing then creating it %> 
+<% Available.exists?(dates: params[:date], train_detail_id: params[:train_id]) ? @available = Available.find_by(dates: params[:date], train_detail_id: params[:train_id]) : @available = Available.create!(dates: params[:date], train_detail_id: params[:train_id]) %>
+
+<h3> Availabilities </h3>
+<% train = TrainDetail.find(params[:train_id]) %>
+<% berth_2ac = train.class_2a_count%>
+<% berth_1ac = train.class_1a_count%>
+<% berth_genral = train.class_general_count%>
+<table class="table">
+  <thead>
+
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">2AC Berth</th>
+      <th scope="col">1AC Berth</th>
+      <th scope="col">General</th>
+    </tr>
+
+  </thead>
+
+  <tbody class="table-group-divider">
+
+    <tr>
+      <th scope="row"><%= params[:date]%></th>
+      <td><%= berth_1ac %></td>
+      <td><%= berth_2ac %></td>
+      <td><%= berth_genral %></td>
+    </tr>
+
+  </tbody>
+</table>
+
+<%= button_to "Continue" , new_reservation_path, method: :get %>
+
+

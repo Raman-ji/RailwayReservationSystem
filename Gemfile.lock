@@ -197,6 +197,7 @@ GEM
     rails-html-sanitizer (1.6.0)
       loofah (~> 2.21)
       nokogiri (~> 1.14)
+    rails_refactor (1.4.6)
     railties (7.1.4)
       actionpack (= 7.1.4)
       activesupport (= 7.1.4)
@@ -291,6 +292,7 @@ DEPENDENCIES
   jbuilder
   puma (>= 5.0)
   rails (~> 7.1.4)
+  rails_refactor
   selenium-webdriver
   sprockets-rails
   sqlite3 (>= 1.4)

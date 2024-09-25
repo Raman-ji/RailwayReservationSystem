@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  dates: 2024-09-24
+  _2AC_available: 1
+  _1AC_available: 1
+  general_available: 1
+  train_detail: one
+
+two:
+  dates: 2024-09-24
+  _2AC_available: 1
+  _1AC_available: 1
+  general_available: 1
+  train_detail: two

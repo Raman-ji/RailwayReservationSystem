@@ -1,0 +1,20 @@
+<h3> Enter Details </h3>
+<%= form_with url: '/create_reservation', method: :get do |form| %>
+
+<%= form.label :passenger_name ,'Passenger Name :' %>
+<%= form.text_field :passenger_name %>
+
+<%= form.label :age , 'Age' %>
+<%= form.text_field :age %>
+
+<%= form.label :gender, 'Gender' %>
+<%= form.select :gender, ['Female', 'Male', 'Others'] %>
+
+<%= form.label :date_of_birth, 'DOB' %>
+<%= form.date_field :date_of_birth, required: true %>
+
+<%= form.label :berth_class, 'Class' %>
+<%= form.select :berth_class, ['1AC', '2AC','General'] %>
+
+<%= form.submit 'Continue' %>
+<% end %>

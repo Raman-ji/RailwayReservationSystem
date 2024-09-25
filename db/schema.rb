@@ -10,7 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_23_120956) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_24_115803) do
+  create_table "availables", force: :cascade do |t|
+    t.date "dates"
+    t.integer "_2AC_available"
+    t.integer "_1AC_available"
+    t.integer "general_available"
+    t.integer "train_detail_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["train_detail_id"], name: "index_availables_on_train_detail_id"
+  end
+
+  create_table "reservations", force: :cascade do |t|
+    t.string "passenger_name"
+    t.integer "age"
+    t.string "gender"
+    t.date "date_of_birth"
+    t.integer "pnr"
+    t.integer "seat_numbers"
+    t.string "berth_class"
+    t.string "ticket_status"
+    t.string "payment_status"
+    t.string "email"
+    t.integer "phone_number"
+    t.integer "train_detail_id", null: false
+    t.integer "available_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["available_id"], name: "index_reservations_on_available_id"
+    t.index ["train_detail_id"], name: "index_reservations_on_train_detail_id"
+  end
+
   create_table "searches", force: :cascade do |t|
     t.string "city"
     t.datetime "created_at", null: false
@@ -49,4 +80,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_23_120956) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "availables", "train_details"
+  add_foreign_key "reservations", "availables"
+  add_foreign_key "reservations", "train_details"
 end
