@@ -1,6 +1,7 @@
 <%# <% finding availabilites if not existing then creating it %> 
 <% Available.exists?(dates: params[:date], train_detail_id: params[:train_id]) ? @available = Available.find_by(dates: params[:date], train_detail_id: params[:train_id]) : @available = Available.create!(dates: params[:date], train_detail_id: params[:train_id]) %>
 
+<%= form_with url: new_reservation_path, method: :get do |form| %>
 <h3> Availabilities </h3>
 <% train = TrainDetail.find(params[:train_id]) %>
 <% berth_2ac = train.class_2a_count%>
@@ -29,7 +30,10 @@
 
   </tbody>
 </table>
+<%= form.hidden_field :date , value: params[:date] %>
+<%=form.hidden_field :train_detail_id, value: params[:train_id]%>
+<%= form.hidden_field :available_id, value: @available.id %>
+<%= form.submit 'Continue' %>
 
-<%= button_to "Continue" , new_reservation_path, method: :get %>
-
+<% end %>
 

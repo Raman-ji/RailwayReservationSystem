@@ -5,6 +5,7 @@ class CreateReservations < ActiveRecord::Migration[7.1]
       t.integer :age
       t.string :gender
       t.date :date_of_birth
+      t.date :date
       t.integer :pnr
       t.integer :seat_numbers
       t.string :berth_class

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_24_115803) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_25_070804) do
   create_table "availables", force: :cascade do |t|
     t.date "dates"
     t.integer "_2AC_available"
@@ -27,6 +27,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_24_115803) do
     t.integer "age"
     t.string "gender"
     t.date "date_of_birth"
+    t.date "date"
     t.integer "pnr"
     t.integer "seat_numbers"
     t.string "berth_class"
@@ -46,6 +47,24 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_24_115803) do
     t.string "city"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "seats", force: :cascade do |t|
+    t.date "dates"
+    t.text "available_2AC_seats"
+    t.text "occupied_2AC_seats"
+    t.text "available_1AC_seats"
+    t.text "occupied_1AC_seats"
+    t.text "available_general_seats"
+    t.text "occupied_general_seats"
+    t.integer "train_detail_id", null: false
+    t.integer "available_id", null: false
+    t.integer "reservation_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["available_id"], name: "index_seats_on_available_id"
+    t.index ["reservation_id"], name: "index_seats_on_reservation_id"
+    t.index ["train_detail_id"], name: "index_seats_on_train_detail_id"
   end
 
   create_table "train_details", force: :cascade do |t|
@@ -83,4 +102,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_24_115803) do
   add_foreign_key "availables", "train_details"
   add_foreign_key "reservations", "availables"
   add_foreign_key "reservations", "train_details"
+  add_foreign_key "seats", "availables"
+  add_foreign_key "seats", "reservations"
+  add_foreign_key "seats", "train_details"
 end

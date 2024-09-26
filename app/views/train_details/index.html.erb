@@ -2,12 +2,13 @@
   
   <% if Date.parse(params[:date]) < Date.today%>
 
-  <h3> Sorry </h3>
-  <p>Date can't be less than from today's date</p>
+    <h3> Sorry </h3>
+    <p>Date can't be less than from today's date</p>
 
-  <% elsif (Date.parse(params[:date]) - Date.today).to_i > 30 %>
-  <h3> Sorry </h3>
-  <p>You only can find trains under current 30 days</p>
+  <% elsif (Date.parse(params[:date]) - Date.today).to_i > 60 %>
+  
+    <h3> Sorry </h3>
+    <p>You only can find trains under current 60 days</p>
 
   <% else %>
 
