@@ -1,15 +1,22 @@
-<h2> Search</h2>
-<%= form_with url: train_details_path, method: :get do |form| %>
-  <%= form.label :from, "From: *" %>
-  <%= form.select :from, Search.order(:city).pluck(:city),{ }, { required: true} %>
+  <h1 style="text-align: center;", class="display-4">Search</h1>
+  <div class = "search">
+  <%= form_with url: train_details_path, method: :get do |form| %>
 
-  <%= form.label :to, "To: *" %>  
-  <%= form.select :to, Search.order(:city).pluck(:city), { }, {required: true} %>
- 
-  <%= form.label :date, "Date: *"%>
-  <%= form.date_field :date , required: true %>
- 
-  
-  <%= form.submit "Search" %>
+    <div class = "from" >
+    <%= form.label :from, "From: *" %>
+    <%= form.select :from, Search.order(:city).pluck(:city),{ }, { required: true} %>
+    </div>
 
-<% end %>
+    <div class = "to">
+    <%= form.label :to, "To: *" %>  
+    <%= form.select :to, Search.order(:city).pluck(:city), { }, {required: true} %>
+    </div>
+
+    <div class = "date">
+    <%= form.label :date, "Date: *"%>
+    <%= form.date_field :date , required: true %>
+    </div>
+    <%= form.submit "Search" %>
+
+  <% end %>
+</div>

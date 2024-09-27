@@ -1,6 +1,6 @@
 class ReservationsController < ApplicationController
   def new
-    @reservation = Reservation.new 
+    @reservation = Reservation.new
   end
 
   def create
@@ -25,6 +25,7 @@ class ReservationsController < ApplicationController
     else
       @reservation.available.decrement!(:general_available) if @reservation.available.general_available.positive?
     end
+
   end
 
   private

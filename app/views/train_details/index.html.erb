@@ -15,35 +15,39 @@
     <% date = Date.parse(params[:date])%>
     <% day = date.strftime("%A")%>
 
-    <h1 style="text-align: center;">DETAILS</h1>
+    <h1 style="text-align: center;", class="display-4">DETAILS</h1>
     <% @trains = TrainDetail.where(from: params[:from], to: params[:to]).where("days LIKE ?", "%#{day}%")%>
     
     <% begin %>
       <% raise 'Train has not found' if @trains.empty?%>
 
-      <table>
+     
 
-        <tr>
-          <th> Select </th>
-          <th>Train Code</th>
-          <th>Train Name</th>
-          <th>From</th>
-          <th>To</th> 
-          <th>Arrival Time</th>
-          <th>Departure Time</th>
-          <th>Time for destination</th>
-          <th>2AC seats</th>
-          <th>Price</th>
-          <th>1AC seats</th>
-          <th>Price</th>
-          <th>General</th>
-          <th>Price</th>
-        </tr>
 
-        <% @trains.each do|train| %>
-
-        <tr>
-          <td><%= form.radio_button :train_id, train.id %></td>
+      <table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col"> Select </th>
+          <th scope="col">Train Code</th>
+          <th scope="col">Train Name</th>
+          <th scope="col">From</th>
+          <th scope="col">To</th> 
+          <th scope="col">Arrival Time</th>
+          <th scope="col">Departure Time</th>
+          <th scope="col">Time for destination</th>
+          <th scope="col">2AC seats</th>
+          <th scope="col">Price</th>
+          <th scope="col">1AC seats</th>
+          <th scope="col">Price</th>
+          <th scope="col">General</th>
+          <th scope="col">Price</th>
+    </tr>
+  </thead>
+  
+  <tbody>
+    <% @trains.each do|train| %>
+      <tr>
+          <td scope= "row"><%= form.radio_button :train_id, train.id %></td>
           <td><%= train.train_code%></td>
           <td><%= train.train_name%></td>
           <td><%= train.from%></td>
@@ -58,10 +62,15 @@
           <td><%= train.class_general_count%></td>
           <td><%= train.class_general_price%></td>
 
-        </tr>
+      </tr>
         <% end %>
+  </tbody>
+</table>
 
-      </table>
+
+
+
+
       <%= form.hidden_field :date, value: params[:date] %>
 
       <%= form.submit "Next" %>

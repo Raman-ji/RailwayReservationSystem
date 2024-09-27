@@ -8,10 +8,9 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
-  resources :availabilities 
+  resources :availabilities
   resources :searches
   resources :train_details
   resources :reservations
   root 'searches#new'
-  post '/create_reservation', to: 'reservations#create'
 end

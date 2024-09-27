@@ -1,5 +1,5 @@
 class TrainDetail < ApplicationRecord
-  has_many :availables , dependent: :destroy
+  has_many :availables, dependent: :destroy
   has_many :reservations, dependent: :destroy
   has_many :seats, dependent: :destroy
   serialize :days, coder: JSON
