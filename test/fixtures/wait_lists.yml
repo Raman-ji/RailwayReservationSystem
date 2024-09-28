@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  dates: 2024-09-28
+  berth_class: MyString
+  train_detail: one
+  reservation: one
+  available: one
+
+two:
+  dates: 2024-09-28
+  berth_class: MyString
+  train_detail: two
+  reservation: two
+  available: two

@@ -2,31 +2,47 @@
 
 <%= form_with model: @reservation , url: reservations_path, method: :post do |form| %>
 
-<%= form.label :passenger_name ,'Passenger Name :' %>
-<%= form.text_field :passenger_name %>
+  <div class="form-group">
+    <%= form.label :passenger_name ,'Passenger Name :' %>
+    <%= form.text_field :passenger_name %>
+  </div>
 
-<%= form.label :date_of_birth, 'DOB' %>
-<%= form.date_field :date_of_birth, required: true %>
+  <div class="form-group">
+    <%= form.label :date_of_birth, 'DOB' %>
+    <%= form.date_field :date_of_birth, required: true %>
+  </div>
 
-<%= form.label :age , 'Age' %>
-<%= form.text_field :age %>
+  <div class="form-group">
+    <%= form.label :age , 'Age' %>
+    <%= form.text_field :age %>
+  </div>
 
-<%= form.label :gender, 'Gender' %>
-<%= form.select :gender, ['Female', 'Male', 'Others'] %>
+  <div class="form-group">
+    <%= form.label :gender, 'Gender' %>
+    <%= form.select :gender, ['Female', 'Male', 'Others'] %>
+  </div>
 
-<%= form.label :berth_class, 'Class' %>
-<%= form.select :berth_class, ['1AC', '2AC','General'] %>
+  <div class="form-group">
+    <%= form.label :berth_class, 'Class' %>
+    <%= form.select :berth_class, ['1AC', '2AC','General'] %>
+  </div>
 
-<%= form.label :email, 'Email ID' %>
-<%= form.email_field :email %>
+  <div class="form-group">
+    <%= form.label :email, 'Email ID' %>
+    <%= form.email_field :email %>
+  </div>
 
-<%= form.label :phone_number, 'Phone Number' %>
-<%= form.telephone_field :phone_number %>
+  <div class="form-group">
+    <%= form.label :phone_number, 'Phone Number' %>
+    <%= form.telephone_field :phone_number %>
+  </div>
 
-<%= form.hidden_field :available_id, value: params[:available_id]%>
-<%= form.hidden_field :date , value: params[:date] %>
-<%= form.hidden_field :train_detail_id, value: params[:train_detail_id]%>
+    <%= form.hidden_field :available_id, value: params[:available_id]%>
+    <%= form.hidden_field :date , value: params[:date] %>
+    <%= form.hidden_field :train_detail_id, value: params[:train_detail_id]%>
 
-<%= form.submit 'Confirm' %>
+  <div class="form-action">
+    <%= form.submit 'Confirm' %>
+  </div>
 
 <% end %>

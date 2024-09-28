@@ -1,6 +1,7 @@
 class Available < ApplicationRecord
   belongs_to :train_detail
   has_many :reservations, dependent: :destroy
+  has_many :wait_lists, dependent: :destroy
   has_one :seat, dependent: :destroy
 
   # initial value of available model

@@ -1,45 +1,47 @@
 <%# <% finding availabilites if not existing then creating it %> 
 <% Available.exists?(dates: params[:date], train_detail_id: params[:train_id]) ? @available = Available.find_by(dates: params[:date], train_detail_id: params[:train_id]) : @available = Available.create!(dates: params[:date], train_detail_id: params[:train_id]) %>
 
-<%= form_with url: new_reservation_path, method: :get do |form| %>
-<h3> Availabilities </h3>
-<% train = TrainDetail.find(params[:train_id]) %>
-<% berth_2ac = train.class_2a_count%>
-<% berth_1ac = train.class_1a_count%>
-<% berth_genral = train.class_general_count%>
-<table class="table">
-  <thead>
+<div class= "availability-container">
+  <%= form_with url: new_reservation_path, method: :get do |form| %>
+    <h3> Availabilities </h3>
+    <% train = TrainDetail.find(params[:train_id]) %>
+    <% berth_2ac = train.class_2a_count%>
+    <% berth_1ac = train.class_1a_count%>
+    <% berth_genral = train.class_general_count%>
 
-    <tr>
-      <th scope="col">Date</th>
-      <th scope="col">2AC Berth</th>
-      <th scope="col">1AC Berth</th>
-      <th scope="col">General</th>
-    </tr>
+    <table class="table">
+     <thead>
+       <tr>
+        <th scope="col">Date</th>
+        <th scope="col">2AC Berth</th>
+        <th scope="col">1AC Berth</th>
+        <th scope="col">General</th>
+       </tr>
 
-  </thead>
+       </thead>
 
-  <tbody class="table-group-divider">
+      <tbody class="table-group-divider">
+        <tr>
+          <th scope="row"><%= params[:date]%></th>
+          <td><%= berth_1ac %></td>
+          <td><%= berth_2ac %></td>
+          <td><%= berth_genral %></td>
+        </tr>
 
-    <tr>
-      <th scope="row"><%= params[:date]%></th>
-      <td><%= berth_1ac %></td>
-      <td><%= berth_2ac %></td>
-      <td><%= berth_genral %></td>
-    </tr>
+       </tbody>
+     </table>
 
-  </tbody>
-</table>
-<%= form.label :number_of_passenger, 'Number of Passengers: ' %>
-<%= form.text_field :number_of_passenger %>
+    <%= form.label :number_of_passenger, 'Number of Passengers: ' %>
+    <%= form.text_field :number_of_passenger, required: true %>
 
-<%= form.hidden_field :date , value: params[:date] %>
-<%=form.hidden_field :train_detail_id, value: params[:train_id]%>
+    <%= form.hidden_field :date , value: params[:date] %>
+    <%=form.hidden_field :train_detail_id, value: params[:train_id]%>
+    <%= form.hidden_field :available_id, value: @available.id %>
 
-<%= form.hidden_field :available_id, value: @available.id %>
-<%= form.submit 'Continue' %>
+    <%= form.submit 'Continue' %>
 
-<% end %>
+  <% end %>
+</div>
 
 
 

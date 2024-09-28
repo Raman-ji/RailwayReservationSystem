@@ -7,9 +7,10 @@ gem 'rails', '~> 7.1.4'
 
 gem 'devise'
 
+# Add the Stripe gem for handling payments
+gem 'stripe'
 
 gem 'rails_refactor'
-
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails'

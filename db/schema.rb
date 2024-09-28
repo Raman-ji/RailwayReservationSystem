@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_25_070804) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_28_090445) do
   create_table "availables", force: :cascade do |t|
     t.date "dates"
     t.integer "_2AC_available"
@@ -99,10 +99,26 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_070804) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "wait_lists", force: :cascade do |t|
+    t.date "dates"
+    t.string "berth_class"
+    t.integer "train_detail_id", null: false
+    t.integer "reservation_id", null: false
+    t.integer "available_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["available_id"], name: "index_wait_lists_on_available_id"
+    t.index ["reservation_id"], name: "index_wait_lists_on_reservation_id"
+    t.index ["train_detail_id"], name: "index_wait_lists_on_train_detail_id"
+  end
+
   add_foreign_key "availables", "train_details"
   add_foreign_key "reservations", "availables"
   add_foreign_key "reservations", "train_details"
   add_foreign_key "seats", "availables"
   add_foreign_key "seats", "reservations"
   add_foreign_key "seats", "train_details"
+  add_foreign_key "wait_lists", "availables"
+  add_foreign_key "wait_lists", "reservations"
+  add_foreign_key "wait_lists", "train_details"
 end

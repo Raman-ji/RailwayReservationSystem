@@ -9,14 +9,33 @@ class ReservationsController < ApplicationController
 
     if @reservation.save
       @reservation.check_and_create_seat(@reservation.date, @reservation.train_detail_id, @reservation.available_id)
+      add_waiting
       decrease_availability(@reservation.berth_class) if @reservation.seat_numbers.present?
     else
       puts @reservation.errors.full_messages
     end
   end
-# after getting a seat decrease there count
 
-  def decrease_availability(berth)
+  private
+
+  def reservation_params
+    params.require(:reservation).permit(:passenger_name, :age, :gender, :date_of_birth, :email, :phone_number, :train_detail_id, :available_id, :berth_class, :date)
+  end
+
+  def add_waiting
+    if @reservation.seat_numbers.nil?
+      WaitList.create(
+        dates: @reservation.date,
+        train_detail_id: @reservation.train_detail_id,
+        available_id: @reservation.available_id,
+        berth_class: @reservation.berth_class,
+        reservation_id: @reservation.id
+      )
+    end
+  end
+
+   # after getting a seat decrease there count
+   def decrease_availability(berth)
     case berth
     when '2AC'
       @reservation.available.decrement!(:_2AC_available) if @reservation.available._2AC_available.positive?
@@ -25,12 +44,6 @@ class ReservationsController < ApplicationController
     else
       @reservation.available.decrement!(:general_available) if @reservation.available.general_available.positive?
     end
-
   end
 
-  private
-
-  def reservation_params
-    params.require(:reservation).permit(:passenger_name, :age, :gender, :date_of_birth, :email, :phone_number, :train_detail_id, :available_id, :berth_class, :date)
-  end
 end

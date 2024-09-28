@@ -2,32 +2,35 @@
   
   <% if Date.parse(params[:date]) < Date.today%>
 
-    <h3> Sorry </h3>
-    <p>Date can't be less than from today's date</p>
+    <div class="error-message">
+      <h3> Sorry </h3>
+      <p>Date can't be less than from today's date</p>
+    </div>
 
   <% elsif (Date.parse(params[:date]) - Date.today).to_i > 60 %>
-  
-    <h3> Sorry </h3>
-    <p>You only can find trains under current 60 days</p>
+
+    <div class="error-message">
+      <h3> Sorry </h3>
+      <p>You only can find trains under current 60 days</p>
+    </div>
 
   <% else %>
 
     <% date = Date.parse(params[:date])%>
     <% day = date.strftime("%A")%>
 
-    <h1 style="text-align: center;", class="display-4">DETAILS</h1>
+    <h1 class = "display-4 text-center">Details</h1>
+    
     <% @trains = TrainDetail.where(from: params[:from], to: params[:to]).where("days LIKE ?", "%#{day}%")%>
     
     <% begin %>
       <% raise 'Train has not found' if @trains.empty?%>
-
-     
-
-
-      <table class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col"> Select </th>
+      
+      <div class="table-container">
+       <table class="table table-striped">
+        <thead>
+         <tr>
+          <th scope="col"> Select </th>
           <th scope="col">Train Code</th>
           <th scope="col">Train Name</th>
           <th scope="col">From</th>
@@ -41,12 +44,12 @@
           <th scope="col">Price</th>
           <th scope="col">General</th>
           <th scope="col">Price</th>
-    </tr>
-  </thead>
+         </tr>
+        </thead>
   
-  <tbody>
-    <% @trains.each do|train| %>
-      <tr>
+        <tbody>
+          <% @trains.each do|train| %>
+          <tr>
           <td scope= "row"><%= form.radio_button :train_id, train.id %></td>
           <td><%= train.train_code%></td>
           <td><%= train.train_name%></td>
@@ -62,22 +65,23 @@
           <td><%= train.class_general_count%></td>
           <td><%= train.class_general_price%></td>
 
-      </tr>
+          </tr>
         <% end %>
-  </tbody>
-</table>
+      </tbody>
+    </table>
+  </div>
 
+  <%= form.hidden_field :date, value: params[:date] %>
+  
+  <div class="form-action">
+      <%= form.submit "Next", class: "submit-button" %>
+  </div>
 
-
-
-
-      <%= form.hidden_field :date, value: params[:date] %>
-
-      <%= form.submit "Next" %>
-
-      <% rescue StandardError => e %>
+  <% rescue StandardError => e %>
+    <div class="error-message">
        <h3> <%= e %> </h3>
-      <% end %>
+    </div>
+  <% end %>
 
   <% end %>
 

@@ -1,0 +1,84 @@
+/* Wrapper for each form instance */
+.reservation-form-wrapper {
+    margin-bottom: 30px; /* Adds spacing between forms */
+  }
+  
+  /* Form heading styling */
+  .reservation-form-wrapper .form-heading {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  /* Reservation form container */
+  .reservation-form-wrapper .reservation-form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Form group (individual input fields and labels) */
+  .reservation-form-wrapper .form-group {
+    margin-bottom: 15px;
+  }
+  
+  /* Form label styling */
+  .reservation-form-wrapper .form-label {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    color: #555;
+  }
+  
+  /* Input field styling */
+  .reservation-form-wrapper .form-input,
+  .reservation-form-wrapper .form-select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-top: 5px;
+  }
+  
+  /* Form select dropdown styling */
+  .reservation-form-wrapper .form-select {
+    background-color: #fff;
+  }
+  
+  /* Submit button styling */
+  .reservation-form-wrapper .form-action {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .reservation-form-wrapper .submit-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .reservation-form-wrapper .submit-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Responsive design for multiple forms */
+  @media screen and (max-width: 600px) {
+    .reservation-form-wrapper .form-input,
+    .reservation-form-wrapper .form-select,
+    .reservation-form-wrapper .submit-button {
+      font-size: 1rem;
+      padding: 8px;
+    }
+  }

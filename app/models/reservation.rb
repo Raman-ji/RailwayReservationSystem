@@ -1,5 +1,6 @@
 class Reservation < ApplicationRecord
   has_one :seat, dependent: :destroy
+  has_one :wait_list, dependent: :destroy
   belongs_to :train_detail
   belongs_to :available
 
