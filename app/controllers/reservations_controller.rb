@@ -1,6 +1,7 @@
 class ReservationsController < ApplicationController
   def new
     @reservation = Reservation.new
+    
   end
 
   def create
@@ -15,6 +16,7 @@ class ReservationsController < ApplicationController
       puts @reservation.errors.full_messages
     end
   end
+
 
   private
 

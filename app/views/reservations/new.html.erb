@@ -1,4 +1,4 @@
-<% count = params[:number_of_passenger] || 1%>
+<% count = params[:number_of_passenger] || 1 %>
 <% count = params[:number_of_passenger].to_i.zero? ? 1 : params[:number_of_passenger].to_i %>
  <% count.times do%>
    <div id="partial-container">
