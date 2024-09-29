@@ -20,4 +20,33 @@ class TrainDetail < ApplicationRecord
     self.to = to.titleize if to.present?
     self.train_name = train_name.titleize if train_name.present?
   end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["availables", "reservations", "seats", "wait_lists"]  # Add your actual associations here
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    [
+      "arrival_time", 
+      "class_1a_count", 
+      "class_1a_price", 
+      "class_2a_count", 
+      "class_2a_price", 
+      "class_general_count", 
+      "class_general_price", 
+      "created_at", 
+      "days", 
+      "departure_time", 
+      "distance_km", 
+      "from", 
+      "id", 
+      "id_value", 
+      "to", 
+      "train_code", 
+      "train_name", 
+      "travel_time_hrs", 
+      "updated_at"
+    ]
+  end
+  
 end

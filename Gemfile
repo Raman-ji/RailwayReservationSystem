@@ -12,6 +12,12 @@ gem 'stripe'
 
 gem 'rails_refactor'
 
+gem 'activeadmin'
+
+gem 'sassc-rails'
+
+gem 'arctic_admin'
+ 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails'
 

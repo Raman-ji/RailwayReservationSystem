@@ -18,16 +18,43 @@ class Reservation < ApplicationRecord
     self.passenger_name = passenger_name.titleize if passenger_name.present?
   end
 
-  def date_of_birth_validity
-    if date_of_birth.present?
-      today = Date.today
-      hundred_ten_years_ago = today - 110.years
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[
+      age
+      available_id
+      berth_class
+      created_at
+      date
+      date_of_birth
+      email
+      gender
+      id
+      id_value
+      passenger_name
+      payment_status
+      phone_number
+      pnr
+      seat_numbers
+      ticket_status
+      train_detail_id
+      updated_at
+    ]
+  end
 
-      if date_of_birth > today
-        errors.add(:date_of_birth, 'cannot be in the future.')
-      elsif date_of_birth < hundred_ten_years_ago
-        errors.add(:date_of_birth, 'cannot be more than 110 years ago.')
-      end
+  def self.ransackable_associations(_auth_object = nil)
+    %w[available train_detail] # Add your actual associations here
+  end
+
+  def date_of_birth_validity
+    return unless date_of_birth.present?
+
+    today = Date.today
+    hundred_ten_years_ago = today - 110.years
+
+    if date_of_birth > today
+      errors.add(:date_of_birth, 'cannot be in the future.')
+    elsif date_of_birth < hundred_ten_years_ago
+      errors.add(:date_of_birth, 'cannot be more than 110 years ago.')
     end
   end
 
@@ -66,7 +93,7 @@ class Reservation < ApplicationRecord
   end
 
   def check_and_create_seat(date, train_id, available_id)
-    @seat = if Seat.exists?(dates: date,train_detail_id: train_id)
+    @seat = if Seat.exists?(dates: date, train_detail_id: train_id)
               finding(date, train_id)
             else
               creating(date, train_id, available_id)
@@ -82,7 +109,8 @@ class Reservation < ApplicationRecord
     seat = Seat.create(dates: date, train_detail_id: train_id, available_id: availability_id, reservation_id: id)
     seat.update(available_2AC_seats: (1..seat.train_detail.class_2a_count).to_a, occupied_2AC_seats: Array(nil))
     seat.update(available_1AC_seats: (1..seat.train_detail.class_1a_count).to_a, occupied_1AC_seats: Array(nil))
-    seat.update(available_general_seats: (1..seat.train_detail.class_general_count).to_a, occupied_general_seats: Array(nil))
+    seat.update(available_general_seats: (1..seat.train_detail.class_general_count).to_a,
+                occupied_general_seats: Array(nil))
     seat
   end
 
