@@ -8,7 +8,7 @@ class ReservationsController < ApplicationController
   def destroy
     waiting_passenger = WaitList.find_by(available_id: params[:available_id], train_detail_id: params[:train_detail_id], berth_class: params[:berth_class])
     passenger = Reservation.find_by(id: params[:id].to_i)
-
+    debugger
     if WaitList.exists?(reservation_id: params[:id])
       debugger
       cancel_wait_list(params[:id])

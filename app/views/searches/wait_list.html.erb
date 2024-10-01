@@ -36,7 +36,7 @@
               <td><%= passenger.reservation.ticket_status %></td>
               <td><%= passenger.reservation.payment_status %></td>
               <td>
-                <%= form_with url: reservation_path(passenger), method: :delete do |form| %>
+                <%= form_with url: reservation_path(passenger.reservation.id), method: :delete do |form| %>
                   <%= form.hidden_field 'available_id', value: passenger.available_id %>
                   <%= form.hidden_field 'train_detail_id', value: passenger.train_detail_id %>
                   <%= form.hidden_field 'berth_class', value: passenger.berth_class %>
