@@ -1,0 +1,51 @@
+<div style="margin: 30px;">
+  <h2 style="text-align: center;">Confirm Reservations</h2>
+  <div class="table-container">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Passenger Name</th>
+          <th scope="col">Age</th>
+          <th scope="col">Gender</th>
+          <th scope="col">DOB</th> 
+          <th scope="col">Date</th>
+          <th scope="col">PNR</th>
+          <th scope="col">Seat Number</th>
+          <th scope="col">Berth Class</th>
+          <th scope="col">Ticket Status</th>
+          <th scope="col">Payment Status</th>
+          <th scope="col">  </th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @reservations = Reservation.all %>
+        <% @reservations.each do |reservation| %>
+          <% if reservation.date >= Date.today && reservation.payment_status == 'Done' && reservation.ticket_status == 'Done' %>
+            <tr>
+              <td><%= reservation.passenger_name %></td>
+              <td><%= reservation.age %></td>
+              <td><%= reservation.gender %></td>
+              <td><%= reservation.date_of_birth %></td>
+              <td><%= reservation.date %></td>
+              <td><%= reservation.pnr %></td>
+              <td><%= reservation.seat_numbers %></td>
+              <td><%= reservation.berth_class %></td>
+              <td><%= reservation.ticket_status %></td>
+              <td><%= reservation.payment_status %></td>
+              <td>
+                <%= form_with url: reservation_path(reservation), method: :delete do |form| %>
+                  <%= form.hidden_field 'available_id', value: reservation.available_id %>
+                  <%= form.hidden_field 'train_detail_id', value: reservation.train_detail_id %>
+                  <%= form.hidden_field 'berth_class', value: reservation.berth_class %>
+                  <%= form.hidden_field 'date', value: reservation.date %>
+                  <%= form.hidden_field 'id', value: reservation.id %>
+                  <%= form.submit 'Cancel' %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

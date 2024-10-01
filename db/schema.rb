@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_29_114502) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_01_073525) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -85,11 +85,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_29_114502) do
     t.text "occupied_general_seats"
     t.integer "train_detail_id", null: false
     t.integer "available_id", null: false
-    t.integer "reservation_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["available_id"], name: "index_seats_on_available_id"
-    t.index ["reservation_id"], name: "index_seats_on_reservation_id"
     t.index ["train_detail_id"], name: "index_seats_on_train_detail_id"
   end
 
@@ -142,7 +140,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_29_114502) do
   add_foreign_key "reservations", "availables"
   add_foreign_key "reservations", "train_details"
   add_foreign_key "seats", "availables"
-  add_foreign_key "seats", "reservations"
   add_foreign_key "seats", "train_details"
   add_foreign_key "wait_lists", "availables"
   add_foreign_key "wait_lists", "reservations"

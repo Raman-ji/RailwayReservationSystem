@@ -1,7 +1,7 @@
 class Seat < ApplicationRecord
   belongs_to :train_detail
   belongs_to :available
-  belongs_to :reservation
+  #belongs_to :reservation
 
   serialize :available_2AC_seats, coder: JSON
   serialize :occupied_2AC_seats, coder: JSON

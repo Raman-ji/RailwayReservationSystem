@@ -1,5 +1,5 @@
 class Reservation < ApplicationRecord
-  has_one :seat, dependent: :destroy
+  #has_one :seat, dependent: :destroy
   has_one :wait_list, dependent: :destroy
   belongs_to :train_detail
   belongs_to :available
@@ -106,7 +106,7 @@ class Reservation < ApplicationRecord
   end
 
   def creating(date, train_id, availability_id)
-    seat = Seat.create(dates: date, train_detail_id: train_id, available_id: availability_id, reservation_id: id)
+    seat = Seat.create(dates: date, train_detail_id: train_id, available_id: availability_id )
     seat.update(available_2AC_seats: (1..seat.train_detail.class_2a_count).to_a, occupied_2AC_seats: Array(nil))
     seat.update(available_1AC_seats: (1..seat.train_detail.class_1a_count).to_a, occupied_1AC_seats: Array(nil))
     seat.update(available_general_seats: (1..seat.train_detail.class_general_count).to_a,

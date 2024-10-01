@@ -1,6 +1,6 @@
   <h1 style="text-align: center;", class="display-4">Search</h1>
   
-  <div class = "search">
+  <div class = 'search'>
   <%= form_with url: train_details_path, method: :get do |form| %>
 
     <div class = "from" >
@@ -21,3 +21,6 @@
 
   <% end %>
 </div>
+
+<%= link_to "Wait List", "/wait_list" %>
+<%= render partial: 'reservation_cancellation', locals: {reservations: @reservations} %>

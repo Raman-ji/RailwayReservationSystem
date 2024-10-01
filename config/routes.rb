@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   resources :availabilities
   resources :searches
   resources :train_details
-  resources :reservations
+  resources :reservations, only: %i[new create destroy]
   root 'searches#new'
+  post '/wait_list', to: 'searches#wait_list'
+  get '/wait_list', to: 'searches#wait_list'
 end

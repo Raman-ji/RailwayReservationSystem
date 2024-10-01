@@ -1,0 +1,55 @@
+
+<div style="margin: 30px;">
+  <h2 style="text-align: center;">Confirm Reservations</h2>
+  <div class="table-container">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Passenger Name</th>
+          <th scope="col">Age</th>
+          <th scope="col">Gender</th>
+          <th scope="col">DOB</th> 
+          <th scope="col">Date</th>
+          <th scope="col">PNR</th>
+          <th scope="col">Seat Number</th>
+          <th scope="col">Berth Class</th>
+          <th scope="col">Ticket Status</th>
+          <th scope="col">Payment Status</th>
+          <th scope="col">  </th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @passengers_in_waitlist = WaitList.all%>
+        <% if @passengers_in_waitlist.nil?%>
+          <h2>No passenger in wait list </h2>
+        <% else %>
+        <% @passengers_in_waitlist.each do |passenger| %>
+          <% if passenger.reservation.date >= Date.today && passenger.reservation.payment_status == 'Done' && passenger.reservation.ticket_status == 'Pending' %>
+            <tr>
+              <td><%= passenger.reservation.passenger_name %></td>
+              <td><%= passenger.reservation.age %></td>
+              <td><%= passenger.reservation.gender %></td>
+              <td><%= passenger.reservation.date_of_birth %></td>
+              <td><%= passenger.reservation.date %></td>
+              <td><%= passenger.reservation.pnr %></td>
+              <td><%= passenger.reservation.berth_class %></td>
+              <td><%= passenger.reservation.ticket_status %></td>
+              <td><%= passenger.reservation.payment_status %></td>
+              <td>
+                <%= form_with url: reservation_path(passenger), method: :delete do |form| %>
+                  <%= form.hidden_field 'available_id', value: passenger.available_id %>
+                  <%= form.hidden_field 'train_detail_id', value: passenger.train_detail_id %>
+                  <%= form.hidden_field 'berth_class', value: passenger.berth_class %>
+                  <%= form.hidden_field 'date', value: passenger.reservation.date %>
+                  <%= form.hidden_field 'id', value: passenger.reservation.id %>
+                  <%= form.submit 'Cancel' %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+         <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
