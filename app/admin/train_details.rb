@@ -29,8 +29,8 @@ ActiveAdmin.register TrainDetail do
       f.input :from
       f.input :to
       f.input :days
-      f.input :departure_time
-      f.input :arrival_time
+      f.input :departure_time, as: :time_select, ignore_date: true
+      f.input :arrival_time, as: :time_select, ignore_date: true
       f.input :distance_km
       f.input :travel_time_hrs
       f.input :class_1a_count

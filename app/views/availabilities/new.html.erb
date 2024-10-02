@@ -9,20 +9,20 @@
     <% berth_1ac = train.class_1a_count%>
     <% berth_genral = train.class_general_count%>
 
-    <table class="table">
+    <table>
      <thead>
        <tr>
-        <th scope="col">Date</th>
-        <th scope="col">2AC Berth</th>
-        <th scope="col">1AC Berth</th>
-        <th scope="col">General</th>
+        <th>Date</th>
+        <th>2AC Berth</th>
+        <th>1AC Berth</th>
+        <th>General</th>
        </tr>
 
        </thead>
 
-      <tbody class="table-group-divider">
+      <tbody>
         <tr>
-          <th scope="row"><%= params[:date]%></th>
+          <td><%= params[:date]%></td>
           <td><%= berth_1ac %></td>
           <td><%= berth_2ac %></td>
           <td><%= berth_genral %></td>

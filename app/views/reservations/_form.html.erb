@@ -1,6 +1,8 @@
 <h3> Enter Details </h3>
 
 <%= form_with model: @reservation , url: reservations_path, method: :post do |form| %>
+ <% unique_token = SecureRandom.hex(10) %>  <!-- Generate unique token -->
+  <%= hidden_field_tag :submission_token, unique_token %>
 
   <div class="form-group">
     <%= form.label :passenger_name ,'Passenger Name :' %>
@@ -36,9 +38,10 @@
     <%= form.hidden_field :date , value: params[:date] %>
     <%= form.hidden_field :train_detail_id, value: params[:train_detail_id]%>
     <%= form.hidden_field :age, value: 0 %>
-
-<div class="form-action">
-    <%= form.submit 'Confirm' %>
-  </div>
-
+    
+   <% unless session[:submission_token] == unique_token %>
+    <%= form.submit 'Submit' %>
+  <% else %>
+    <p>You have already submitted this form.</p>
+  <% end %>
 <% end %>

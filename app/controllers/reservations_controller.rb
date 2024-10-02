@@ -33,7 +33,13 @@ class ReservationsController < ApplicationController
     @reservation = Reservation.new(reservation_params)
     @reservation.age = @reservation.calculate_age
 
-    if @reservation.save
+    if session[:submission_tokens]&.include?(params[:submission_token])
+      flash.now[:alert] = "You have already submitted this form."
+      # redirect_to new_reservation_path and return
+    elsif @reservation.save
+      session[:submission_tokens] ||= []
+      session[:submission_tokens] << params[:submission_token]
+ 
       @reservation.check_and_create_seat(@reservation.date, @reservation.train_detail_id, @reservation.available_id)
       add_waiting
       decrease_availability(@reservation.berth_class) if @reservation.seat_numbers.present?
@@ -112,8 +118,6 @@ class ReservationsController < ApplicationController
   end
 
   def cancel_wait_list(id)
-    debugger
     WaitList.find_by(reservation_id: id).destroy
-    debugger
   end
 end
