@@ -19,6 +19,7 @@
     <% date = Date.parse(params[:date])%>
     <% day = date.strftime("%A")%>
 
+    <div class = "Details" >
     <h1 class = "display-4 text-center">Details</h1>
     
     <% @trains = TrainDetail.where(from: params[:from], to: params[:to]).where("days LIKE ?", "%#{day}%")%>
@@ -26,7 +27,7 @@
     <% begin %>
       <% raise 'Train has not found' if @trains.empty?%>
       
-      <div>
+      <div class = "Date">
        <table>
         <thead>
          <tr>
@@ -50,7 +51,7 @@
         <tbody>
           <% @trains.each do|train| %>
           <tr>
-          <td scope= "row"><%= form.radio_button :train_id, train.id %></td>
+          <td scope= "row"><%= form.radio_button :train_id, train.id, required: true %></td>
           <td><%= train.train_code%></td>
           <td><%= train.train_name%></td>
           <td><%= train.from%></td>
@@ -59,11 +60,11 @@
           <td><%= train.departure_time.strftime("%H:%M:%S")%></td>
           <td><%= (train.departure_time+(train.travel_time_hrs*60)).strftime("%H:%M:%S")%></td>
           <td><%= train.class_2a_count%></td>
-          <td><%= train.class_2a_price%></td>
+          <td><%= train.class_2a_price%> Rs</td>
           <td><%= train.class_1a_count%></td>
-          <td><%= train.class_1a_price%></td>
+          <td><%= train.class_1a_price%> Rs</td>
           <td><%= train.class_general_count%></td>
-          <td><%= train.class_general_price%></td>
+          <td><%= train.class_general_price%> Rs</td>
 
           </tr>
         <% end %>
@@ -73,9 +74,11 @@
 
   <%= form.hidden_field :date, value: params[:date] %>
   
-  <div class="form-action">
-      <%= form.submit "Next", class: "submit-button" %>
-  </div>
+  
+     <div class="form-action-container">
+       <%= form.submit "Next", class: "form-action" %>
+     </div>
+
 
   <% rescue StandardError => e %>
     <div class="error-message">

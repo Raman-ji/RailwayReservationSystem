@@ -1,5 +1,6 @@
-<h3> Enter Details </h3>
 
+<h3> Enter Details </h3>
+<div class = "reservation-form">
 <%= form_with model: @reservation , url: reservations_path, method: :post do |form| %>
  <% unique_token = SecureRandom.hex(10) %>  <!-- Generate unique token -->
   <%= hidden_field_tag :submission_token, unique_token %>
@@ -45,3 +46,4 @@
     <p>You have already submitted this form.</p>
   <% end %>
 <% end %>
+</div>

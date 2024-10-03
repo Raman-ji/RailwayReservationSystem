@@ -1,0 +1,81 @@
+/* Center the Waitlist block */
+.waitlist-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 80px;
+  }
+  
+  /* Adjust the header of the Waitlist block */
+  .waitlist-container h2 {
+    margin-bottom: 20px;
+  }
+  
+  /* Table container styling */
+  .waitlist-container .waitlist-table {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    overflow-x: auto; /* Enable horizontal scrolling if necessary */
+  }
+  
+  /* Table styling */
+  .waitlist-container .waitlist-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+  }
+  
+  /* Header styling */
+  .waitlist-container .waitlist-table table th {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    text-align: left;
+    font-size: 1rem;
+    border-bottom: 2px solid #ddd;
+  }
+  
+  /* Row and cell styling */
+  .waitlist-container .waitlist-table table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 0.95rem;
+    text-align: left;
+    color: #333;
+  }
+  
+  /* Hover effect for table rows */
+  .waitlist-container .waitlist-table table tr:hover {
+    background-color: #f2f2f2;
+  }
+  
+  /* Button cell styling */
+  .waitlist-container .waitlist-table table td form input[type="submit"] {
+    background-color: #dc3545; /* Cancel button color */
+    color: white;
+    padding: 5px 10px;  
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .waitlist-container .waitlist-table table td form input[type="submit"]:hover {
+    background-color: #28a745
+  }
+  
+  /* Alternate row coloring */
+  .waitlist-container .waitlist-table table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  /* Responsive table for smaller screens */
+  @media screen and (max-width: 600px) {
+    .waitlist-container .waitlist-table table th,
+    .waitlist-container .waitlist-table table td {
+      font-size: 0.85rem;
+      padding: 8px;
+    }
+  }
+  

@@ -1,84 +1,94 @@
-/* Wrapper for each form instance */
-.reservation-form-wrapper {
-    margin-bottom: 30px; /* Adds spacing between forms */
+/* Center the Details block */
+.Details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 100px;
+}
+
+/* Adjust the width of the Details block */
+.Details h1 {
+  margin-bottom: 20px;
+}
+
+.Details .Date {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  overflow-x: auto; /* Enable horizontal scrolling if necessary */
+}
+
+/* Table container remains centered */
+.Date table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+/* Header styling */
+.Date table th {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  text-align: left;
+  font-size: 1rem;
+  border-bottom: 2px solid #ddd;
+}
+
+/* Row and cell styling */
+.Date table td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.95rem;
+  text-align: left;
+  color: #333;
+}
+
+/* Hover effect for table rows */
+.Date table tr:hover {
+  background-color: #f2f2f2;
+}
+
+/* Radio button cell styling */
+.Date table td input[type="radio"] {
+  margin: 0;
+  padding: 0;
+}
+
+/* Alternate row coloring */
+.Date table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Responsive table for smaller screens */
+@media screen and (max-width: 600px) {
+  .Date table th, .Date table td {
+    font-size: 0.85rem;
+    padding: 8px;
   }
+}
+
+/* Center the form-action button */
+.form-action-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.form-action {
+  background-color:#218838;
+  color: white;
+  padding: 10px 20px;  
+  border: none;
+  border-radius: 10px;
+  font-size: 1.5rem; 
+  cursor: pointer;
+  transition: background-color 0.3s ease;
   
-  /* Form heading styling */
-  .reservation-form-wrapper .form-heading {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  /* Reservation form container */
-  .reservation-form-wrapper .reservation-form {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Form group (individual input fields and labels) */
-  .reservation-form-wrapper .form-group {
-    margin-bottom: 15px;
-  }
-  
-  /* Form label styling */
-  .reservation-form-wrapper .form-label {
-    font-size: 1.1rem;
-    font-weight: bold;
-    margin-bottom: 5px;
-    display: block;
-    color: #555;
-  }
-  
-  /* Input field styling */
-  .reservation-form-wrapper .form-input,
-  .reservation-form-wrapper .form-select {
-    width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-    margin-top: 5px;
-  }
-  
-  /* Form select dropdown styling */
-  .reservation-form-wrapper .form-select {
-    background-color: #fff;
-  }
-  
-  /* Submit button styling */
-  .reservation-form-wrapper .form-action {
-    text-align: center;
-    margin-top: 20px;
-  }
-  
-  .reservation-form-wrapper .submit-button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .reservation-form-wrapper .submit-button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Responsive design for multiple forms */
-  @media screen and (max-width: 600px) {
-    .reservation-form-wrapper .form-input,
-    .reservation-form-wrapper .form-select,
-    .reservation-form-wrapper .submit-button {
-      font-size: 1rem;
-      padding: 8px;
-    }
-  }
+}
+
+.form-action:hover {
+  background-color: #0056b3;
+}
+
+

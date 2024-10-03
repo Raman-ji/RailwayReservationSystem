@@ -17,4 +17,7 @@ Rails.application.routes.draw do
   root 'searches#new'
   post '/wait_list', to: 'searches#wait_list'
   get '/wait_list', to: 'searches#wait_list'
+  post '/reservation_cancellation', to: 'searches#reservation_cancellation'
+  get '/reservation_cancellation', to: 'searches#reservation_cancellation'
+  
 end

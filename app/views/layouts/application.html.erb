@@ -14,6 +14,9 @@
     <%= stylesheet_link_tag 'availabilities', media: 'all' %>
     <%= stylesheet_link_tag 'train_details', media: 'all' %>
     <%= stylesheet_link_tag 'reservations', media: 'all' %>
+    <%= stylesheet_link_tag 'wait_list', media: 'all' %>
+     <%= stylesheet_link_tag 'reservation_cancellation', media: 'all' %>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
@@ -21,19 +24,19 @@
 
   <body>
 
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
-    
-
+  
    
-   <header>
+   
       <%# navbar start from here %>
     <nav>
       <% if user_signed_in? %>
       
         <div >
+          <%= link_to "Wait List", "/wait_list" %>
+          <%= link_to "Confirm", '/reservation_cancellation' %>
           <%= link_to 'Edit profile',edit_user_registration_path %>
           <%= link_to 'Logout', destroy_user_session_path, method: :delete%>
+
         </div>
 
       <%else%>
@@ -45,7 +48,7 @@
 
       </nav>
         <%# navbar ends here %>
-    <header>
+    
 
     <%= yield %>
   </body>
