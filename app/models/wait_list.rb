@@ -3,8 +3,12 @@ class WaitList < ApplicationRecord
   belongs_to :reservation
   belongs_to :available
 
+  serialize :passenger_names, coder: JSON
+  serialize :wait_pnr, coder: JSON
+
   def self.ransackable_attributes(auth_object = nil)
     [
+      "pnr",
       "available_id", 
       "berth_class", 
       "created_at", 

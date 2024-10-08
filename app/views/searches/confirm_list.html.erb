@@ -1,0 +1,59 @@
+<div class="confirm-reservations-container">
+  <h2>Confirm Reservations</h2>
+  <div class="reservations-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Passenger Name</th>
+          <th>Gender</th>
+          <th>DOB</th>
+          <th>Date</th>
+          <th>PNR</th>
+          <th>Seat Number</th>
+          <th>Berth Class</th>
+          <th>Ticket Status</th>
+          <th>Payment Status</th>
+          <th>Select</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @reservations = Reservation.all %>
+        <% @reservations.each do |reservation| %>
+          
+          <% if reservation.date >= Date.today %>
+            <%# <% ticket_statuses = JSON.parse(reservation.ticket_status) rescue [] %>
+            <%# <% payment_statuses = JSON.parse(reservation.payment_status.to_json) rescue [] %> 
+            <% index = 0 %>
+            <% reservation.passenger_name.each do|name|  %>
+              <% if reservation.payment_status[index] == 'Done' && reservation.ticket_status[index] == 'Done' %>
+                <tr>
+                  <td><%= name %></td>
+                  <td><%= reservation.gender[index] %></td>
+                  <td><%= reservation.date_of_birth[index] %></td>
+                  <td><%= reservation.date %></td>
+                  <td><%= reservation.pnr[index] %></td>
+                  <td><%= reservation.seat_numbers[index] %></td>
+                  <td><%= reservation.berth_class %></td>
+                  <td><%= reservation.ticket_status[index] %></td>
+                  <td><%= reservation.payment_status[index] %></td>
+                  <td>
+                    <%= form_with url: reservation_path(reservation), method: :delete do |form| %>
+                      <%= form.hidden_field 'available_id', value: reservation.available_id %>
+                      <%= form.hidden_field 'train_detail_id', value: reservation.train_detail_id %>
+                      <%= form.hidden_field 'berth_class', value: reservation.berth_class %>
+                      <%= form.hidden_field 'date', value: reservation.date %>
+                      <%= form.hidden_field 'id', value: reservation.id %>
+                      <%= form.hidden_field 'index', value: index %>
+                      <%= form.submit 'Cancel' %>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+              <% index += 1 %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -16,6 +16,7 @@ gem 'activeadmin'
 
 gem 'sassc-rails'
 
+
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails'
 
@@ -79,3 +80,4 @@ group :test do
   gem 'capybara'
   gem 'selenium-webdriver'
 end
+gem "cssbundling-rails"

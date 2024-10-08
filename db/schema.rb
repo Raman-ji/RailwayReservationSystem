@@ -49,16 +49,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_01_073525) do
   end
 
   create_table "reservations", force: :cascade do |t|
-    t.string "passenger_name"
-    t.integer "age"
-    t.string "gender"
-    t.date "date_of_birth"
+    t.text "passenger_name"
+    t.text "gender"
+    t.text "date_of_birth"
     t.date "date"
-    t.integer "pnr"
-    t.integer "seat_numbers"
+    t.text "pnr"
+    t.text "seat_numbers"
     t.string "berth_class"
-    t.string "ticket_status"
-    t.string "payment_status"
+    t.text "ticket_status"
+    t.text "payment_status"
     t.string "email"
     t.integer "phone_number"
     t.integer "train_detail_id", null: false
@@ -126,6 +125,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_01_073525) do
   create_table "wait_lists", force: :cascade do |t|
     t.date "dates"
     t.string "berth_class"
+    t.text "passenger_names"
+    t.text "wait_pnr"
     t.integer "train_detail_id", null: false
     t.integer "reservation_id", null: false
     t.integer "available_id", null: false
