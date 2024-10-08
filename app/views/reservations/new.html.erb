@@ -4,6 +4,7 @@
  <%= form_with model: @reservation , url: reservations_path, method: :post do |form| %>
 
   <% count.times do |i| %>
+  <div class = "reservation">
     <div class="form-section">
       <%= label_tag "reservation[passenger_name][]", "Passenger Name" %>
       <%= text_field_tag "reservation[passenger_name][]", nil, required: true %>
@@ -14,6 +15,7 @@
       <%= label_tag "reservation[gender][]", "Gender" %>
       <%= select_tag "reservation[gender][]", options_for_select(['Female', 'Male', 'Others']), required: true %>
     </div>
+    <hr>
   <% end %>
 
    <div class="form-group">
@@ -35,5 +37,5 @@
     <%= form.hidden_field :date , value: params[:date] %>
     <%= form.hidden_field :train_detail_id, value: params[:train_detail_id]%>
     <%= form.submit 'Submit' %>
-  
+  </div>
   <% end %>

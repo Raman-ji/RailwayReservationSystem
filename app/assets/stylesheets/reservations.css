@@ -1,6 +1,4 @@
 /* Main container for the form */
-
-
 #partial-container {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
@@ -9,10 +7,12 @@
   margin-bottom: 20px;
 }
 
-/* reservation form */
-.reservation-form{
-  margin:20px 0 10px 550px;
+/* Reservation form */
+.reservation-form {
+  margin: 20px auto;
+  max-width: 700px;
 }
+
 /* Title styling for the form */
 h3 {
   font-size: 2rem;
@@ -22,39 +22,46 @@ h3 {
   font-weight: bold;
 }
 
-/* Form group styling */
-.form-group {
+/* Form section for each passenger */
+.form-section {
   margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  background-color: #f1f1f1;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
 }
 
 /* Label styling */
+.form-section label,
 .form-group label {
   font-size: 1.1rem;
   color: #333;
   margin-bottom: 5px;
+  display: block;
 }
 
-/* Input styling */
-.form-group input[type="text"],
+/* Uniform sizing for input, select, and date fields */
+.form-section input[type="text"],
+.form-section input[type="date"],
+.form-section select,
 .form-group input[type="email"],
-.form-group input[type="date"],
 .form-group input[type="tel"],
 .form-group select {
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1rem;
   transition: border-color 0.3s;
+  box-sizing: border-box;
 }
 
-.form-group input[type="text"]:focus,
+/* Ensure consistent behavior when focused */
+.form-section input[type="text"]:focus,
+.form-section input[type="date"]:focus,
+.form-section select:focus,
 .form-group input[type="email"]:focus,
-.form-group input[type="date"]:focus,
 .form-group input[type="tel"]:focus,
 .form-group select:focus {
   border-color: #007bff;
@@ -71,6 +78,7 @@ input[type="submit"] {
   font-size: 1.2rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  max-width: 500px;
 }
 
 input[type="submit"]:hover {
@@ -87,9 +95,10 @@ input[type="submit"]:hover {
     font-size: 1.5rem;
   }
 
-  .form-group input[type="text"],
+  .form-section input[type="text"],
+  .form-section input[type="date"],
+  .form-section select,
   .form-group input[type="email"],
-  .form-group input[type="date"],
   .form-group input[type="tel"],
   .form-group select {
     max-width: 100%;
