@@ -1,26 +1,42 @@
-<% count = params[:number_of_passenger].to_i || 1 %>
-
 <h3> Enter Details </h3>
- <%= form_with model: @reservation , url: reservations_path, method: :post do |form| %>
+<%= form_with model: @reservation, url: reservations_path, method: :post do |form| %>
 
-  <% count.times do |i| %>
-  <div class = "reservation">
-    <div class="form-section">
-      <%= label_tag "reservation[passenger_name][]", "Passenger Name" %>
-      <%= text_field_tag "reservation[passenger_name][]", nil, required: true %>
+  <div id="passenger_detail">
+    <%= form.fields_for :passengers do |passenger_form| %>
+
+      <div class="passenger-group">
+        <%= passenger_form.label :passenger_name, 'Passenger Name' %>
+        <%= passenger_form.text_field :passenger_name, required: true %>
+
+        <%= passenger_form.label :date_of_birth, 'DOB' %>
+        <%= passenger_form.date_field :date_of_birth, required: true %>
+
+        <%= passenger_form.label :gender, 'Gender' %>
+        <%= passenger_form.select :gender, ['Female', 'Male', 'Others'], {}, { required: true } %>
+        <button class="remove-passenger" type="button">Remove</button>
+      </div>
+
+    <% end %>
+  </div>
+
+  <button id="add-button" type="button">Add More</button>
+
+  <div id="passenger-template" style="display: none;">
+    <div class="passenger-group" style="display: block;">
+      <label for="passenger_name">Passenger Name</label>
       
-      <%= label_tag "reservation[date_of_birth][]", "Date of Birth" %>
-      <%= date_field_tag "reservation[date_of_birth][]", nil, required: true %>
+
+      <label for="date_of_birth">DOB</label>
       
-      <%= label_tag "reservation[gender][]", "Gender" %>
-      <%= select_tag "reservation[gender][]", options_for_select(['Female', 'Male', 'Others']), required: true %>
+      <label for="gender">Gender</label>
+      
+      <button class="remove-passenger" type="button">Remove</button>
     </div>
-    <hr>
-  <% end %>
+  </div>
 
-   <div class="form-group">
+  <div class="form-group">
     <%= form.label :berth_class, 'Class' %>
-    <%= form.select :berth_class, ['1AC', '2AC','General'] %>
+    <%= form.select :berth_class, ['1AC', '2AC', 'General'] %>
   </div>
 
   <div class="form-group">
@@ -33,9 +49,27 @@
     <%= form.telephone_field :phone_number %>
   </div>
 
-    <%= form.hidden_field :available_id, value: params[:available_id]%>
-    <%= form.hidden_field :date , value: params[:date] %>
-    <%= form.hidden_field :train_detail_id, value: params[:train_detail_id]%>
-    <%= form.submit 'Submit' %>
-  </div>
-  <% end %>
+  <%= form.hidden_field :available_id, value: params[:available_id] %>
+  <%= form.hidden_field :date, value: params[:date] %>
+  <%= form.hidden_field :train_detail_id, value: params[:train_detail_id] %>
+  <%= form.submit 'Submit' %>
+
+<% end %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const passengerDetail = document.getElementById('passenger_detail');
+    const passengerTemplate = document.getElementById('passenger-template').innerHTML;
+    const addButton = document.getElementById('add-button');
+
+    addButton.addEventListener('click', function () {
+      passengerDetail.insertAdjacentHTML('beforeend', passengerTemplate);
+    });
+
+    passengerDetail.addEventListener('click', function (event) { 
+      if (event.target.classList.contains('remove-passenger')) {
+        event.target.closest('.passenger-group').remove();
+      }
+    });
+  });
+</script>

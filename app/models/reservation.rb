@@ -1,16 +1,14 @@
 class Reservation < ApplicationRecord
-  serialize :date_of_birth, coder: JSON
-  serialize :passenger_name, coder: JSON
-  serialize :gender, coder: JSON
-  serialize :seat_numbers, coder: JSON
   serialize :pnr, coder: JSON
   serialize :train_status, coder: JSON
   serialize :payment_status, coder: JSON
-  serialize :ticket_status, coder:JSON
+  serialize :ticket_status, coder: JSON
 
   has_one :wait_list, dependent: :destroy
+  has_many :passengers, dependent: :destroy
   belongs_to :train_detail
   belongs_to :available
+  accepts_nested_attributes_for :passengers, allow_destroy: true
 
   with_options presence: true do
     validates :berth_class, :email, :phone_number, :train_detail_id, :available_id

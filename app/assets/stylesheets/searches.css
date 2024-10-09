@@ -46,7 +46,7 @@ h1.display-4 {
 
 /* Submit button */
 .search input[type="submit"] {
-  width: 100%;
+  width: 500px;
   padding: 10px;
   background-color: #28a745;
   color: white; 

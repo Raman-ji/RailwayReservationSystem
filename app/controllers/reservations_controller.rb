@@ -1,8 +1,10 @@
 class ReservationsController < ApplicationController
+  skip_before_action :verify_authenticity_token
   before_action :reservation_params, only: :create
   # befor_action  :cancellation_params, only: :destroy
   def new
     @reservation = Reservation.new
+    1.times { @reservation.passengers.build }
   end
 
   def destroy
@@ -15,7 +17,7 @@ class ReservationsController < ApplicationController
     passenger = Reservation.find_by(id: params[:id].to_i)
 
     if WaitList.exists?(reservation_id: params[:id])
-      cancel_wait_list(params[:id], params[:index].to_i, passenger, waiting_passenger)
+      cancel_wait_list(params[:id], params[:index].to_i, waiting_passenger)
     elsif passenger.nil?
       redirect_to new_search_path, alert: 'Reservation not found.' and return
     elsif waiting_passenger.nil?
@@ -24,9 +26,8 @@ class ReservationsController < ApplicationController
     else
       manage_waitlist(waiting_passenger, passenger.id, params[:index].to_i)
     end
-    # Process refund (assuming this is handled by another method)
-    # Process email notification (assuming this is handled by another method)
-
+    # Process refund
+    # Process email notification
     ticket_status = passenger.ticket_status || []
     payment_status = passenger.payment_status || []
 
@@ -45,6 +46,7 @@ class ReservationsController < ApplicationController
   end
 
   def create
+    byebug
     @reservation = Reservation.new(reservation_params)
     # After payment manage payment status and ticket status
     if @reservation.save
@@ -54,13 +56,15 @@ class ReservationsController < ApplicationController
         @reservation.available_id,
         @reservation.passenger_name.size
       )
-
+      add_passenger
       add_waiting
       decrease_availability(@reservation.berth_class) if @reservation.seat_numbers.present?
+      redirect_to new_search_path, notice: 'Reservation created'
     else
-      puts @reservation.errors.full_messages
+      byebug
+      puts "mistake"
+      redirect_to new_search_path, notice: 'Reservation error'
     end
-    redirect_to new_search_path, notice: 'Reservation started'
   end
 
   private
@@ -73,9 +77,11 @@ class ReservationsController < ApplicationController
       :available_id,
       :berth_class,
       :date,
-      passenger_name: [],
-      gender: [],
-      date_of_birth: []
+      passengers_attributes: [
+        :passenger_name,
+        :date_of_birth,
+        :gender
+      ]
     )
   end
 
@@ -96,13 +102,10 @@ class ReservationsController < ApplicationController
       reservation_id: @reservation.id,
       passenger_names: remaining_passengers,
     )
-    # Update ticket_status for passengers in the waitlist to 'Pending'
     ticket_status = @reservation.ticket_status || []
-    # Mark 'Pending' status for passengers who don't have assigned seats
     remaining_passengers.each_with_index do |_, index|
       ticket_status[count + index] = 'Pending'
     end
-    # Update the reservation with the modified ticket_status array
     @reservation.update(ticket_status: ticket_status)
     waiting_passenger.update(wait_pnr: remaining_pnr)
   end
@@ -142,11 +145,8 @@ class ReservationsController < ApplicationController
 
   def manage_waitlist(waiting_passenger, id, index)
     # Find the reservation for the passenger whose seat number is being assigned
-    passenger = Reservation.find(id)
-
-    # Check if the index is within the bounds of the seat_numbers array
-    if index < passenger.seat_numbers.length && index < waiting_passenger.reservation.seat_numbers.length
-      # Assign the seat number from the active passenger to the waiting passenger's reservation
+    reserve_passenger = Reservation.find(id)
+    if index < reserve_passenger.seat_numbers.length && index < waiting_passenger.reservation.seat_numbers.length
       waiting_passenger.reservation.seat_numbers[index] = passenger.seat_numbers[index]
 
       if waiting_passenger.reservation.save
@@ -155,7 +155,6 @@ class ReservationsController < ApplicationController
         render plain: 'Error saving reservation for waiting passenger.'
       end
     else
-      # Handle the case where the index is out of bounds
       render plain: 'Index out of bounds.'
     end
 
@@ -184,7 +183,7 @@ class ReservationsController < ApplicationController
     end
   end
 
-  def cancel_wait_list(_id, index, passenger, waiting_passenger)
+  def cancel_wait_list(_id, index, waiting_passenger)
     waiting_passenger.passenger_names.delete_at(index)
     waiting_passenger.wait_pnr.delete_at(index)
     waiting_passenger.save

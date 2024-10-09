@@ -21,8 +21,6 @@
         <% @reservations.each do |reservation| %>
           
           <% if reservation.date >= Date.today %>
-            <%# <% ticket_statuses = JSON.parse(reservation.ticket_status) rescue [] %>
-            <%# <% payment_statuses = JSON.parse(reservation.payment_status.to_json) rescue [] %> 
             <% index = 0 %>
             <% reservation.passenger_name.each do|name|  %>
               <% if reservation.payment_status[index] == 'Done' && reservation.ticket_status[index] == 'Done' %>

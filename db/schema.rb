@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_01_073525) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_09_095216) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -48,13 +48,20 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_01_073525) do
     t.index ["train_detail_id"], name: "index_availables_on_train_detail_id"
   end
 
+  create_table "passengers", force: :cascade do |t|
+    t.string "passenger_name"
+    t.string "date_of_birth"
+    t.string "gender"
+    t.text "seat_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "reservation_id", null: false
+    t.index ["reservation_id"], name: "index_passengers_on_reservation_id"
+  end
+
   create_table "reservations", force: :cascade do |t|
-    t.text "passenger_name"
-    t.text "gender"
-    t.text "date_of_birth"
     t.date "date"
     t.text "pnr"
-    t.text "seat_numbers"
     t.string "berth_class"
     t.text "ticket_status"
     t.text "payment_status"
@@ -138,6 +145,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_01_073525) do
   end
 
   add_foreign_key "availables", "train_details"
+  add_foreign_key "passengers", "reservations"
   add_foreign_key "reservations", "availables"
   add_foreign_key "reservations", "train_details"
   add_foreign_key "seats", "availables"
