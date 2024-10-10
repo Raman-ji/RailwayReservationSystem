@@ -22,7 +22,6 @@
           <% @passengers_in_waitlist.each do |waitlist_passenger| %>
           
             <% waitlist_passenger.wait_pnr.each_with_index do |current_pnr, index| %>
-              <% # Use the correct PNR for finding the index in the reservation %>
               <% reservation = Reservation.find(waitlist_passenger.reservation_id) %>
               <% correct_index = reservation.pnr.index(current_pnr) if reservation.pnr.present? %>
               

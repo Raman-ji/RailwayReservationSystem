@@ -31,50 +31,47 @@ class Reservation < ApplicationRecord
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    %w[available train_detail] # Add your actual associations here
+    %w[available train_detail]
   end
 
-  def check_availability(passenger_count)
-    seat_number = case berth_class
-                  when '2AC'
-                    available._2AC_available.size < passenger_count ? nil : seat_allotment(berth_class, passenger_count)
-                  when '1AC'
-                    available._1AC_available.size < passenger_count ? nil : seat_allotment(berth_class, passenger_count)
-                  else
-                    available.general_available.size < passenger_count ? nil : seat_allotment(berth_class, passenger_count)
-                  end
-    self.seat_numbers = seat_number
-    save
+  def check_availability(passenger_count, passengers)
+    passengers.each do |passenger|
+      seat = case berth_class
+        when '2AC'
+          available._2AC_available.zero? ? nil : seat_allotment(berth_class)
+        when '1AC'
+          available._1AC_available.zero? ? nil : seat_allotment(berth_class)
+        else
+          available.general_available.zero? ? nil : seat_allotment(berth_class)
+        end
+      passenger.seat_number = seat
+      passenger.save
+    end
   end
 
-  def seat_allotment(berth_class, count)
-    seats = []
+  def seat_allotment(berth_class)
     if berth_class == '2AC'
-      count -= (count - @seat.available_2AC_seats.size) if count > @seat.available_2AC_seats.size
-      seats = @seat.available_2AC_seats.shift(count)
-      @seat.occupied_2AC_seats.unshift(*seats)
-
+      seat = @seat.available_2AC_seats.shift
+      @seat.occupied_2AC_seats.unshift(seat)
     elsif berth_class == '1AC'
-      count -= (count - @seat.available_2AC_seats.size) if count > @seat.available_1AC_seats.size
-      seats = @seat.available_1AC_seats.shift(count)
-      @seat.occupied_1AC_seats.unshift(*seats)
-
+      seat = @seat.available_1AC_seats.shift
+      @seat.occupied_1AC_seats.unshift(seat)
     else
-      count -= (count - @seat.available_general_seats.size) if count > @seat.available_general_seats.size
-      seats = @seat.available_general_seats.shift(count)
-      @seat.occupied_general_seats.unshift(*seats)
+      seat = @seat.available_general_seats.shift
+      @seat.occupied_general_seats.unshift(seat)
     end
     @seat.save
-    seats
+    decrease_availability(berth_class)
+    seat
   end
 
-  def check_and_create_seat(date, train_id, available_id, passenger_count)
+  def check_and_create_seat(date, train_id, available_id, passenger_count, passenger)
     @seat = if Seat.exists?(dates: date, train_detail_id: train_id)
               finding(date, train_id)
             else
               creating(date, train_id, available_id)
             end
-    check_availability(passenger_count)
+    check_availability(passenger_count, passenger)
   end
 
   def finding(date, train_id)
@@ -88,5 +85,17 @@ class Reservation < ApplicationRecord
     seat.update(available_general_seats: (1..seat.train_detail.class_general_count).to_a,
                 occupied_general_seats: Array(nil))
     seat
+  end
+
+  # after getting a seat decrease there count
+  def decrease_availability(berth)
+    case berth
+    when '2AC'
+      self.available.decrement!(:_2AC_available) if self.available._2AC_available.positive?
+    when '1AC'
+      self.available.decrement!(:_1AC_available) if self.available._1AC_available.positive?
+    else
+      self.available.decrement!(:general_available) if self.available.general_available.positive?
+    end
   end
 end

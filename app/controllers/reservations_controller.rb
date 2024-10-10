@@ -50,16 +50,16 @@ class ReservationsController < ApplicationController
     @reservation = Reservation.new(reservation_params)
     # After payment manage payment status and ticket status
     if @reservation.save
-      passenger = create_passenger(reservation_params[:passengers_attributes], @reservation.id)
-      # @reservation.check_and_create_seat(
-      #   @reservation.date,
-      #   @reservation.train_detail_id,
-      #   @reservation.available_id,
-      #   @reservation.passenger_name.size
-      # )
-      # add_passenger
-      # add_waiting
-      # decrease_availability(@reservation.berth_class) if @reservation.seat_numbers.present?
+      count = @reservation.passengers.count
+      passengers_detail = @reservation.passengers
+      @reservation.check_and_create_seat(
+        @reservation.date,
+        @reservation.train_detail_id,
+        @reservation.available_id,
+        count,
+        passengers_detail
+      )
+      add_waiting(passengers_detail)
       redirect_to new_search_path, notice: 'Reservation created'
     else
       redirect_to new_search_path, notice: 'Reservation error'
@@ -67,24 +67,6 @@ class ReservationsController < ApplicationController
   end
 
   private
-
-  # Creating the passenger
-  def create_passenger(details, reservation_id)
-    details.each do |_, passenger_detail|  
-      passenger = Passenger.new(
-        passenger_name: passenger_detail[:passenger_name],
-        date_of_birth: passenger_detail[:date_of_birth],
-        gender: passenger_detail[:gender],
-        reservation_id: reservation_id
-      )
-      unless passenger.save
-        passenger.errors.full_messages.each do |message|
-          puts message
-        end
-        passenger
-      end
-    end
-  end
 
   def reservation_params
     params.require(:reservation).permit(
@@ -103,51 +85,24 @@ class ReservationsController < ApplicationController
     )
   end
 
-  def add_waiting
-    return unless @reservation.seat_numbers.size != @reservation.passenger_name.size
-
-    # Calculate how many passengers need to be added to the waitlist
-    count = @reservation.seat_numbers.size
-    remaining_passengers = @reservation.passenger_name[count..]
-
-    remaining_pnr = @reservation.pnr[count..]
-    # Create a waitlist entry for the remaining passengers
-    waiting_passenger = WaitList.create(
-      dates: @reservation.date,
-      train_detail_id: @reservation.train_detail_id,
-      available_id: @reservation.available_id,
-      berth_class: @reservation.berth_class,
-      reservation_id: @reservation.id,
-      passenger_names: remaining_passengers
-    )
-    ticket_status = @reservation.ticket_status || []
-    remaining_passengers.each_with_index do |_, index|
-      ticket_status[count + index] = 'Pending'
-    end
-    @reservation.update(ticket_status:)
-    waiting_passenger.update(wait_pnr: remaining_pnr)
-  end
-
-  # after getting a seat decrease there count
-  def decrease_availability(berth)
-    case berth
-    when '2AC'
-      if @reservation.available._2AC_available.positive?
-        @reservation.available.decrement!(:_2AC_available,
-                                          @reservation.seat_numbers.size)
-      end
-    when '1AC'
-      if @reservation.available._1AC_available.positive?
-        @reservation.available.decrement!(:_1AC_available,
-                                          @reservation.seat_numbers.size)
-      end
-    else
-      if @reservation.available.general_available.positive?
-        @reservation.available.decrement!(:general_available,
-                                          @reservation.seat_numbers.size)
-      end
+  def add_waiting(passengers_detail)
+    passenger_nil_seat = passengers_detail.where(seat_number: nil) # Finding the passenger who have nil in seat
+    passenger_nil_seat.each do
+      WaitList.create(
+        dates: @reservation.date,
+        train_detail_id: @reservation.train_detail_id,
+        available_id: @reservation.available_id,
+        berth_class: @reservation.berth_class,
+        reservation_id: @reservation.id,
+        passenger_names: passenger_nil_seat.passenger_name,
+        wait_pnr: passenger_nil_seat.pnr
+      )
+      passenger_nil_seat.ticket_status = 'Pending'
+      passenger_nil_seat.save
     end
   end
+
+ 
 
   # Increase availability after ticket cancellation
   def increase_availability(berth, passenger)

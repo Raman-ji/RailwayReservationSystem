@@ -2,6 +2,7 @@ class WaitList < ApplicationRecord
   belongs_to :train_detail
   belongs_to :reservation
   belongs_to :available
+  has_many :passengers
 
   serialize :passenger_names, coder: JSON
   serialize :wait_pnr, coder: JSON

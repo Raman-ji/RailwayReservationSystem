@@ -17,38 +17,33 @@
         </tr>
       </thead>
       <tbody>
-        <% @reservations = Reservation.all %>
-        <% @reservations.each do |reservation| %>
+        <% @passengers = Passenger.all %>
+        <% @passengers.each do |passenger| %>
           
-          <% if reservation.date >= Date.today %>
-            <% index = 0 %>
-            <% reservation.passenger_name.each do|name|  %>
-              <% if reservation.payment_status[index] == 'Done' && reservation.ticket_status[index] == 'Done' %>
+          <% if passenger.reservation.date >= Date.today %>
+              <% if passenger.reservation.payment_status == 'Done' && passenger.ticket_status == 'Done' %>
                 <tr>
-                  <td><%= name %></td>
-                  <td><%= reservation.gender[index] %></td>
-                  <td><%= reservation.date_of_birth[index] %></td>
-                  <td><%= reservation.date %></td>
-                  <td><%= reservation.pnr[index] %></td>
-                  <td><%= reservation.seat_numbers[index] %></td>
-                  <td><%= reservation.berth_class %></td>
-                  <td><%= reservation.ticket_status[index] %></td>
-                  <td><%= reservation.payment_status[index] %></td>
+                  <td><%= passenger.passenger_name %></td>
+                  <td><%= passenger.gender %></td>
+                  <td><%= passenger.date_of_birth %></td>
+                  <td><%= passenger.reservation.date %></td>
+                  <td><%= passenger.pnr %></td>
+                  <td><%= passenger.seat_number %></td>
+                  <td><%= passenger.reservation.berth_class %></td>
+                  <td><%= passenger.ticket_status %></td>
+                  <td><%= passenger.reservation.payment_status %></td>
                   <td>
-                    <%= form_with url: reservation_path(reservation), method: :delete do |form| %>
-                      <%= form.hidden_field 'available_id', value: reservation.available_id %>
-                      <%= form.hidden_field 'train_detail_id', value: reservation.train_detail_id %>
-                      <%= form.hidden_field 'berth_class', value: reservation.berth_class %>
-                      <%= form.hidden_field 'date', value: reservation.date %>
-                      <%= form.hidden_field 'id', value: reservation.id %>
-                      <%= form.hidden_field 'index', value: index %>
+                    <%= form_with url: reservation_path(passenger), method: :delete do |form| %>
+                      <%= form.hidden_field 'available_id', value: passenger.reservation.available_id %>
+                      <%= form.hidden_field 'train_detail_id', value: passenger.reservation.train_detail_id %>
+                      <%= form.hidden_field 'berth_class', value: passenger.reservation.berth_class %>
+                      <%= form.hidden_field 'date', value: passenger.reservation.date %>
+                      <%= form.hidden_field 'id', value: passenger.id %>
                       <%= form.submit 'Cancel' %>
                     <% end %>
                   </td>
                 </tr>
               <% end %>
-              <% index += 1 %>
-            <% end %>
           <% end %>
         <% end %>
       </tbody>
