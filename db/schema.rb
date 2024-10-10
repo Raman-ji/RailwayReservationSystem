@@ -52,7 +52,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_09_095216) do
     t.string "passenger_name"
     t.string "date_of_birth"
     t.string "gender"
-    t.text "seat_number"
+    t.integer "seat_number"
+    t.integer "pnr"
+    t.string "ticket_status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "reservation_id", null: false
@@ -61,9 +63,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_09_095216) do
 
   create_table "reservations", force: :cascade do |t|
     t.date "date"
-    t.text "pnr"
     t.string "berth_class"
-    t.text "ticket_status"
     t.text "payment_status"
     t.string "email"
     t.integer "phone_number"

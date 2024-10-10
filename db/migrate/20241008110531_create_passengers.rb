@@ -4,7 +4,9 @@ class CreatePassengers < ActiveRecord::Migration[7.1]
       t.string :passenger_name
       t.string :date_of_birth
       t.string :gender
-      t.text :seat_number
+      t.integer :seat_number
+      t.integer :pnr
+      t.string :ticket_status
       t.timestamps
     end
   end

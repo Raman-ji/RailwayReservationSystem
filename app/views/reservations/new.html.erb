@@ -21,19 +21,7 @@
 
   <button id="add-button" type="button">Add More</button>
 
-  <div id="passenger-template" style="display: none;">
-    <div class="passenger-group" style="display: block;">
-      <label for="passenger_name">Passenger Name</label>
-      
-
-      <label for="date_of_birth">DOB</label>
-      
-      <label for="gender">Gender</label>
-      
-      <button class="remove-passenger" type="button">Remove</button>
-    </div>
-  </div>
-
+  
   <div class="form-group">
     <%= form.label :berth_class, 'Class' %>
     <%= form.select :berth_class, ['1AC', '2AC', 'General'] %>
@@ -57,19 +45,38 @@
 <% end %>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const passengerDetail = document.getElementById('passenger_detail');
-    const passengerTemplate = document.getElementById('passenger-template').innerHTML;
-    const addButton = document.getElementById('add-button');
+document.addEventListener("DOMContentLoaded", () => {
+  const addPassengerButton = document.getElementById("add-button");
+  const passengersDiv = document.getElementById("passenger_detail");
+  let passengerIndex = <%= @reservation.passengers.size %>; 
 
-    addButton.addEventListener('click', function () {
-      passengerDetail.insertAdjacentHTML('beforeend', passengerTemplate);
-    });
+  addPassengerButton.addEventListener("click", () => {
+    const newPassengerDiv = document.createElement("div");
+    newPassengerDiv.classList.add("passenger-group");
 
-    passengerDetail.addEventListener('click', function (event) { 
-      if (event.target.classList.contains('remove-passenger')) {
-        event.target.closest('.passenger-group').remove();
-      }
+    newPassengerDiv.innerHTML = `
+      <label for="reservation_passengers_attributes_${passengerIndex}_passenger_name">Passenger Name</label>
+      <input type="text" name="reservation[passengers_attributes][${passengerIndex}][passenger_name]" id="reservation_passengers_attributes_${passengerIndex}_passenger_name" required>
+      
+      <label for="reservation_passengers_attributes_${passengerIndex}_date_of_birth">DOB</label>
+      <input type="date" name="reservation[passengers_attributes][${passengerIndex}][date_of_birth]" id="reservation_passengers_attributes_${passengerIndex}_date_of_birth" required>
+      
+      <label for="reservation_passengers_attributes_${passengerIndex}_gender">Gender</label>
+      <select name="reservation[passengers_attributes][${passengerIndex}][gender]" id="reservation_passengers_attributes_${passengerIndex}_gender" required>
+        <option value="Female">Female</option>
+        <option value="Male">Male</option>
+        <option value="Others">Others</option>
+      </select>
+      
+      <button type="button" class="remove-passenger">Remove</button>
+    `;
+
+    passengersDiv.appendChild(newPassengerDiv);
+    passengerIndex++;
+
+    newPassengerDiv.querySelector('.remove-passenger').addEventListener('click', () => {
+      newPassengerDiv.remove();
     });
   });
+});
 </script>

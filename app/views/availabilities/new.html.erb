@@ -33,6 +33,7 @@
 
     <%= form.hidden_field :date , value: params[:date] %>
     <%= form.hidden_field :train_detail_id, value: params[:train_id]%>
+    <%= form.hidden_field :available_id, value: @available.id %>
     <%= form.submit 'Continue' %>
 
   <% end %>

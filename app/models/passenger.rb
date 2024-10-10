@@ -1,4 +1,3 @@
 class Passenger < ApplicationRecord
-  serialize :seat_number, coder: JSON
-  belongs_to :reservations
+  belongs_to :reservation
 end

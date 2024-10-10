@@ -4,7 +4,7 @@ class ReservationsController < ApplicationController
   # befor_action  :cancellation_params, only: :destroy
   def new
     @reservation = Reservation.new
-    1.times { @reservation.passengers.build }
+    @reservation.passengers.build
   end
 
   def destroy
@@ -22,7 +22,8 @@ class ReservationsController < ApplicationController
       redirect_to new_search_path, alert: 'Reservation not found.' and return
     elsif waiting_passenger.nil?
       increase_availability(params[:berth_class], passenger)
-      seat_delocate(params[:berth_class], params[:available_id], params[:train_detail_id], params[:date], passenger, params[:index].to_i)
+      seat_delocate(params[:berth_class], params[:available_id], params[:train_detail_id], params[:date], passenger,
+                    params[:index].to_i)
     else
       manage_waitlist(waiting_passenger, passenger.id, params[:index].to_i)
     end
@@ -38,7 +39,7 @@ class ReservationsController < ApplicationController
       ticket_status[index] = 'Cancelled'
       payment_status[index] = 'Refunded'
       passenger.seat_numbers.delete_at(index)
-      passenger.update(ticket_status: ticket_status, payment_status: payment_status)
+      passenger.update(ticket_status:, payment_status:)
       redirect_to new_search_path, notice: 'Reservation cancelled'
     else
       redirect_to new_search_path, alert: 'Invalid index for updating status.'
@@ -46,28 +47,44 @@ class ReservationsController < ApplicationController
   end
 
   def create
-    byebug
     @reservation = Reservation.new(reservation_params)
     # After payment manage payment status and ticket status
     if @reservation.save
-      @reservation.check_and_create_seat(
-        @reservation.date,
-        @reservation.train_detail_id,
-        @reservation.available_id,
-        @reservation.passenger_name.size
-      )
-      add_passenger
-      add_waiting
-      decrease_availability(@reservation.berth_class) if @reservation.seat_numbers.present?
+      passenger = create_passenger(reservation_params[:passengers_attributes], @reservation.id)
+      # @reservation.check_and_create_seat(
+      #   @reservation.date,
+      #   @reservation.train_detail_id,
+      #   @reservation.available_id,
+      #   @reservation.passenger_name.size
+      # )
+      # add_passenger
+      # add_waiting
+      # decrease_availability(@reservation.berth_class) if @reservation.seat_numbers.present?
       redirect_to new_search_path, notice: 'Reservation created'
     else
-      byebug
-      puts "mistake"
       redirect_to new_search_path, notice: 'Reservation error'
     end
   end
 
   private
+
+  # Creating the passenger
+  def create_passenger(details, reservation_id)
+    details.each do |_, passenger_detail|  
+      passenger = Passenger.new(
+        passenger_name: passenger_detail[:passenger_name],
+        date_of_birth: passenger_detail[:date_of_birth],
+        gender: passenger_detail[:gender],
+        reservation_id: reservation_id
+      )
+      unless passenger.save
+        passenger.errors.full_messages.each do |message|
+          puts message
+        end
+        passenger
+      end
+    end
+  end
 
   def reservation_params
     params.require(:reservation).permit(
@@ -77,10 +94,11 @@ class ReservationsController < ApplicationController
       :available_id,
       :berth_class,
       :date,
-      passengers_attributes: [
-        :passenger_name,
-        :date_of_birth,
-        :gender
+      passengers_attributes: %i[
+        id
+        passenger_name
+        date_of_birth
+        gender
       ]
     )
   end
@@ -100,13 +118,13 @@ class ReservationsController < ApplicationController
       available_id: @reservation.available_id,
       berth_class: @reservation.berth_class,
       reservation_id: @reservation.id,
-      passenger_names: remaining_passengers,
+      passenger_names: remaining_passengers
     )
     ticket_status = @reservation.ticket_status || []
     remaining_passengers.each_with_index do |_, index|
       ticket_status[count + index] = 'Pending'
     end
-    @reservation.update(ticket_status: ticket_status)
+    @reservation.update(ticket_status:)
     waiting_passenger.update(wait_pnr: remaining_pnr)
   end
 
