@@ -1,18 +1,20 @@
 ActiveAdmin.register WaitList do
+  permit_params :pnr, :available_id, :berth_class, :reservation_id, :train_detail_id, :dates # Add any other parameters you need
 
-  # See permitted parameters documentation:
-  # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
-  #
-  # Uncomment all parameters which should be permitted for assignment
-  #
-  # permit_params :dates, :berth_class, :train_detail_id, :reservation_id, :available_id
-  #
-  # or
-  #
-  # permit_params do
-  #   permitted = [:dates, :berth_class, :train_detail_id, :reservation_id, :available_id]
-  #   permitted << :other if params[:action] == 'create' && current_user.admin?
-  #   permitted
-  # end
-  
+  # Add a filter for passenger names
+  filter :passengers_passenger_name_cont, as: :string, label: 'Passenger Name'
+
+  # Define the index page to display the required columns
+  index do
+    selectable_column
+    id_column
+    column :pnr
+    column :available_id
+    column :berth_class
+    column :train_detail_id
+    column :reservation_id
+    column :created_at
+    column :updated_at
+    actions
+  end
 end

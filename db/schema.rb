@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_09_095216) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_11_133136) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -102,8 +102,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_09_095216) do
     t.string "from"
     t.string "to"
     t.text "days"
-    t.datetime "departure_time"
-    t.datetime "arrival_time"
+    t.time "departure_time"
+    t.time "arrival_time"
     t.integer "distance_km"
     t.integer "travel_time_hrs"
     t.integer "class_2a_count"
@@ -132,14 +132,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_09_095216) do
   create_table "wait_lists", force: :cascade do |t|
     t.date "dates"
     t.string "berth_class"
-    t.text "passenger_names"
-    t.text "wait_pnr"
+    t.string "passenger_name"
     t.integer "train_detail_id", null: false
     t.integer "reservation_id", null: false
     t.integer "available_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "passenger_id", null: false
     t.index ["available_id"], name: "index_wait_lists_on_available_id"
+    t.index ["passenger_id"], name: "index_wait_lists_on_passenger_id"
     t.index ["reservation_id"], name: "index_wait_lists_on_reservation_id"
     t.index ["train_detail_id"], name: "index_wait_lists_on_train_detail_id"
   end
@@ -151,6 +152,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_09_095216) do
   add_foreign_key "seats", "availables"
   add_foreign_key "seats", "train_details"
   add_foreign_key "wait_lists", "availables"
+  add_foreign_key "wait_lists", "passengers"
   add_foreign_key "wait_lists", "reservations"
   add_foreign_key "wait_lists", "train_details"
 end

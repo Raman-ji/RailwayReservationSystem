@@ -16,6 +16,10 @@ h1.display-4 {
 .search form {
   width: 100%;
   max-width: 600px;
+  background-color: #f9f9f9;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Style the individual input fields */
@@ -23,7 +27,7 @@ h1.display-4 {
   margin-bottom: 15px;
 }
 
-/* Label style with white color */
+/* Label style with black color */
 .search label {
   display: block;
   font-size: 1.2rem;
@@ -31,38 +35,52 @@ h1.display-4 {
   color: black;
 }
 
-/* Select and Date input styles with white text */
+/* Select and Date input styles */
 .search select, 
 .search input[type="date"] {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   font-size: 1rem;
   border-radius: 5px;
   border: 1px solid #ccc;
   box-sizing: border-box;
-  color: black; 
+  color: #333; 
   background-color: white; 
+  transition: border-color 0.3s ease;
 }
 
-/* Submit button */
+/* Submit button style */
 .search input[type="submit"] {
-  width: 500px;
-  padding: 10px;
+  width: 100%;
+  padding: 12px;
   background-color: #28a745;
   color: white; 
   font-size: 1.2rem;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .search input[type="submit"]:hover {
-  background-color: #28a745;
+  background-color: #218838;
 }
 
-/* Optional: Improve focus state for inputs */
+/* Improve focus state for inputs */
 .search select:focus,
 .search input[type="date"]:focus {
   outline: none;
   border-color: #0056b3;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 600px) {
+  .search form {
+    padding: 20px;
+  }
+
+  .search input[type="submit"] {
+    font-size: 1rem;
+    padding: 10px;
+  }
 }

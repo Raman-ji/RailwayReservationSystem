@@ -20,4 +20,10 @@ Rails.application.routes.draw do
   post '/confirm_list', to: 'searches#confirm_list'
   get '/confirm_list', to: 'searches#confirm_list'
   get 'payment', to: 'reservations#create', as: :payment
+  resources :reservations do
+    member do
+      delete 'confirm', to: 'reservations#destroy_confirm'
+      delete 'waitlist', to: 'reservations#destroy_wait_list'
+    end
+  end  
 end

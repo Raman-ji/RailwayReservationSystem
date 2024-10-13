@@ -2,10 +2,7 @@ class WaitList < ApplicationRecord
   belongs_to :train_detail
   belongs_to :reservation
   belongs_to :available
-  has_many :passengers
-
-  serialize :passenger_names, coder: JSON
-  serialize :wait_pnr, coder: JSON
+  belongs_to :passenger
 
   def self.ransackable_attributes(auth_object = nil)
     [
@@ -18,12 +15,12 @@ class WaitList < ApplicationRecord
       "id_value", 
       "reservation_id", 
       "train_detail_id", 
-      "updated_at"
+      "updated_at",
+      "passengers_passenger_name" 
     ]
   end
 
   def self.ransackable_associations(auth_object = nil)
-    ["reservation", "available"]  # Adjust according to your actual associations
+    ["reservation", "available", "passengers"]  
   end
-  
 end

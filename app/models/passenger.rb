@@ -1,7 +1,6 @@
 class Passenger < ApplicationRecord
   belongs_to :reservation
-  belongs_to :wait_list
-
+  has_one :wait_list
   validate :date_of_birth_validity
   with_options presence: true do
     validates :passenger_name, :gender, :date_of_birth

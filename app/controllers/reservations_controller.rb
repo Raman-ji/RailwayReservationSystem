@@ -1,48 +1,34 @@
 class ReservationsController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :reservation_params, only: :create
-  # befor_action  :cancellation_params, only: :destroy
   def new
     @reservation = Reservation.new
     @reservation.passengers.build
   end
 
-  def destroy
-    waiting_passenger = WaitList.find_by(
-      available_id: params[:available_id],
-      train_detail_id: params[:train_detail_id],
-      berth_class: params[:berth_class]
-    )
+  def destroy_wait_list
+    waiting_passenger = WaitList.find(params[:waitlist_id].to_i)
+    passenger = Passenger.find(params[:passenger_id].to_i)
+    cancel_waiting_passenger( waiting_passenger, passenger)
+    redirect_to wait_list_path, notice: 'WaitList Cancelled !'
+  end
 
-    passenger = Reservation.find_by(id: params[:id].to_i)
-
-    if WaitList.exists?(reservation_id: params[:id])
-      cancel_wait_list(params[:id], params[:index].to_i, waiting_passenger)
-    elsif passenger.nil?
-      redirect_to new_search_path, alert: 'Reservation not found.' and return
-    elsif waiting_passenger.nil?
+  def destroy_confirm
+    passenger = Passenger.find(params[:id].to_i)
+    if WaitList.exists?(available_id: params[:available_id], train_detail_id: params[:train_detail_id], berth_class: params[:berth_class], dates: params[:date])
+      waiting_passenger = WaitList.find_by(
+        available_id: params[:available_id],
+        train_detail_id: params[:train_detail_id],
+        berth_class: params[:berth_class]
+      )
+      manage_waitlist(waiting_passenger, passenger)
+    else
       increase_availability(params[:berth_class], passenger)
-      seat_delocate(params[:berth_class], params[:available_id], params[:train_detail_id], params[:date], passenger,
-                    params[:index].to_i)
-    else
-      manage_waitlist(waiting_passenger, passenger.id, params[:index].to_i)
-    end
-    # Process refund
-    # Process email notification
-    ticket_status = passenger.ticket_status || []
-    payment_status = passenger.payment_status || []
-
-    index = params[:correct_index].to_i
-
-    # Only proceed if the index exists within the array bounds
-    if index < ticket_status.length && index < payment_status.length
-      ticket_status[index] = 'Cancelled'
-      payment_status[index] = 'Refunded'
-      passenger.seat_numbers.delete_at(index)
-      passenger.update(ticket_status:, payment_status:)
-      redirect_to new_search_path, notice: 'Reservation cancelled'
-    else
-      redirect_to new_search_path, alert: 'Invalid index for updating status.'
+      seat_delocate(params[:berth_class], params[:available_id], params[:train_detail_id], params[:date], passenger)
+      passenger.ticket_status = 'Cancelled'
+      passenger.seat_number = nil
+      passenger.save
+      redirect_to confirm_list_path, notice: 'Reservation Cancelled !'
     end
   end
 
@@ -59,10 +45,11 @@ class ReservationsController < ApplicationController
         count,
         passengers_detail
       )
+
       add_waiting(passengers_detail)
       redirect_to new_search_path, notice: 'Reservation created'
     else
-      redirect_to new_search_path, notice: 'Reservation error'
+      redirect_to new_search_path, notice: @reservation.errors.full_messages
     end
   end
 
@@ -87,78 +74,70 @@ class ReservationsController < ApplicationController
 
   def add_waiting(passengers_detail)
     passenger_nil_seat = passengers_detail.where(seat_number: nil) # Finding the passenger who have nil in seat
-    passenger_nil_seat.each do
+    passenger_nil_seat.each do |passenger|
       WaitList.create(
         dates: @reservation.date,
         train_detail_id: @reservation.train_detail_id,
         available_id: @reservation.available_id,
         berth_class: @reservation.berth_class,
         reservation_id: @reservation.id,
-        passenger_names: passenger_nil_seat.passenger_name,
-        wait_pnr: passenger_nil_seat.pnr
+        passenger_name: passenger.passenger_name,
+        passenger_id: passenger.id
       )
-      passenger_nil_seat.ticket_status = 'Pending'
-      passenger_nil_seat.save
+      passenger.update(ticket_status: 'Pending')
     end
   end
-
- 
 
   # Increase availability after ticket cancellation
   def increase_availability(berth, passenger)
+    reserved = passenger.reservation
     case berth
     when '2AC'
-      passenger.available.increment!(:_2AC_available)
+      reserved.available.increment!(:_2AC_available)
     when '1AC'
-      passenger.available.increment!(:_1AC_available)
+      reserved.available.increment!(:_1AC_available)
     else
-      passenger.available.increment!(:general_available)
+      reserved.available.increment!(:general_available)
     end
   end
 
-  def manage_waitlist(waiting_passenger, id, index)
+  def manage_waitlist(waiting_passenger, passenger)
     # Find the reservation for the passenger whose seat number is being assigned
-    reserve_passenger = Reservation.find(id)
-    if index < reserve_passenger.seat_numbers.length && index < waiting_passenger.reservation.seat_numbers.length
-      waiting_passenger.reservation.seat_numbers[index] = passenger.seat_numbers[index]
+    wait_first_passenger = WaitList.find_by(available_id: params[:available_id], train_detail_id: params[:train_detail_id], berth_class: params[:berth_class] ,dates: params[:date])
+    wait_passenger = Passenger.find_by(id: wait_first_passenger.passenger_id)
+    wait_passenger.seat_number = passenger.seat_number
+    wait_passenger.ticket_status = 'Done'
+    wait_first_passenger.destroy
+    wait_passenger.save
 
-      if waiting_passenger.reservation.save
-        waiting_passenger.reservation.ticket_status[index] = 'Done'
-      else
-        render plain: 'Error saving reservation for waiting passenger.'
-      end
-    else
-      render plain: 'Index out of bounds.'
-    end
-
-    passenger.ticket_status[index] = 'Cancelled'
+    passenger.ticket_status = 'Cancelled'
+    passenger.seat_number = nil
+    passenger.save
   end
 
-  def seat_delocate(berth, availability_id, train_id, date, _passenger, index)
+  def seat_delocate(berth, availability_id, train_id, date, passenger)
     seat = Seat.find_by(train_detail_id: train_id, available_id: availability_id, dates: date)
-    value = _passenger.seat_numbers[index]
+    value = passenger.seat_number
 
     if berth == '2AC'
-      index_data = seat.occupied_2AC_seats.index(value)
-      seat.available_2AC_seats.insert(index_data, value)
       seat.occupied_2AC_seats.shift(value)
+      seat.available_2AC_seats.unshift(value)
       seat.available_2AC_seats.sort
     elsif berth == '1AC'
-      index_data = seat.occupied_1AC_seats.index(value)
-      seat.available_1AC_seats.insert(index_data, value)
       seat.occupied_1AC_seats.shift(value)
+      seat.available_1AC_seats.unshift(value)
       seat.available_1AC_seats.sort
     else
-      index_data = seat.occupied_general_seats.index(value)
-      seat.available_general_seats.insert(index_data, value)
       seat.occupied_general_seats.shift(value)
+      seat.available_general_seats.unshift(value)
       seat.available_general_seats.sort
     end
   end
 
-  def cancel_wait_list(_id, index, waiting_passenger)
-    waiting_passenger.passenger_names.delete_at(index)
-    waiting_passenger.wait_pnr.delete_at(index)
-    waiting_passenger.save
+  def cancel_waiting_passenger(waiting_passenger, passenger)
+    passenger.ticket_status = 'Cancelled'
+    # refund logic remains
+    passenger.save
+    waiting_passenger.destroy
   end
 end

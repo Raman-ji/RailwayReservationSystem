@@ -11,10 +11,26 @@ class TrainDetail < ApplicationRecord
             format: { with: /\A[A-Z]{1,3}\d{1,4}\z/, message: 'must be a valid Indian passenger train code' }
 
   with_options presence: true do
-    validates :train_code, :train_name, :from, :to, :days, :departure_time, :arrival_time, :distance_km, :travel_time_hrs,
-              :class_2a_count, :class_2a_price, :class_1a_count, :class_1a_price, :class_general_count, :class_general_price
+    validates :train_code, :train_name, :from, :to, :days,
+              :departure_time, :arrival_time, :distance_km,
+              :travel_time_hrs, :class_1a_count, :class_1a_price,
+              :class_2a_count, :class_2a_price,
+              :class_general_count, :class_general_price
   end
 
+  before_create do
+    self.departure_time ||= Time.current
+    self.arrival_time ||= Time.current
+  end
+
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[arrival_time class_1a_count class_1a_price class_2a_count class_2a_price class_general_count
+       class_general_price created_at days departure_time distance_km from id id_value to train_code train_name travel_time_hrs updated_at]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[availables reservations seats wait_lists]
+  end
   before_create do
     self.from = from.titleize if from.present?
     self.to = to.titleize if to.present?
@@ -22,34 +38,5 @@ class TrainDetail < ApplicationRecord
     self.class_1a_price = 0 if class_1a_price.negative? || class_1a_price.nil?
     self.class_2a_price = 0 if class_2a_price.negative? || class_2a_price.nil?
     self.class_general_price = 0 if class_general_price.negative? || class_general_price.nil?
-
-  end
-
-  def self.ransackable_associations(_auth_object = nil)
-    %w[availables reservations seats wait_lists] # Add your actual associations here
-  end
-
-  def self.ransackable_attributes(_auth_object = nil)
-    %w[
-      arrival_time
-      class_1a_count
-      class_1a_price
-      class_2a_count
-      class_2a_price
-      class_general_count
-      class_general_price
-      created_at
-      days
-      departure_time
-      distance_km
-      from
-      id
-      id_value
-      to
-      train_code
-      train_name
-      travel_time_hrs
-      updated_at
-    ]
   end
 end

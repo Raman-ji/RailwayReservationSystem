@@ -17,39 +17,35 @@
       <tbody>
         <% @passengers_in_waitlist = WaitList.all %>
         <% if @passengers_in_waitlist.empty? %>
-          <h2>No passenger in wait list</h2>
+          <tr>
+            <td colspan="8">No passenger in wait list</td>
+          </tr>
         <% else %>
           <% @passengers_in_waitlist.each do |waitlist_passenger| %>
-          
-            <% waitlist_passenger.wait_pnr.each_with_index do |current_pnr, index| %>
-              <% reservation = Reservation.find(waitlist_passenger.reservation_id) %>
-              <% correct_index = reservation.pnr.index(current_pnr) if reservation.pnr.present? %>
-              
-              <% if reservation.date >= Date.today %>
-                <% if correct_index && reservation.payment_status[correct_index] == 'Done' && reservation.ticket_status[correct_index] == 'Pending' %>
-                  <tr>
-                    <td><%= waitlist_passenger.passenger_names[index] %></td>
-                    <td><%= reservation.gender[correct_index] %></td>
-                    <td><%= reservation.date_of_birth[correct_index] %></td>
-                    <td><%= reservation.date %></td>
-                    <td><%= reservation.berth_class %></td>
-                    <td><%= reservation.ticket_status[correct_index] %></td>
-                    <td><%= reservation.payment_status[correct_index] %></td>
-                    <td>
-                      <%= form_with url: reservation_path(reservation.id), method: :delete do |form| %>
-                        <%= form.hidden_field 'available_id', value: waitlist_passenger.available_id %>
-                        <%= form.hidden_field 'train_detail_id', value: waitlist_passenger.train_detail_id %>
-                        <%= form.hidden_field 'berth_class', value: waitlist_passenger.berth_class %>
-                        <%= form.hidden_field 'date', value: reservation.date %>
-                        <%= form.hidden_field 'id', value: reservation.id %>
-                        <%= form.hidden_field 'correct_index', value: correct_index %>
-                        <%= form.hidden_field 'index', value:index%>
-                        <%= form.submit 'Cancel' %>
-                      <% end %>
-                    </td>
-                  </tr>
-                <% end %>
-              <% end %>
+            <% reservation = Reservation.find(waitlist_passenger.reservation_id) %>
+
+            <% if reservation.date >= Date.today && reservation.payment_status == 'Done' && waitlist_passenger.passenger.ticket_status == 'Pending' %>
+              <tr>
+                <td><%= waitlist_passenger.passenger.passenger_name %></td>
+                <td><%= waitlist_passenger.passenger.gender %></td>
+                <td><%= waitlist_passenger.passenger.date_of_birth %></td>
+                <td><%= reservation.date %></td>
+                <td><%= reservation.berth_class %></td>
+                <td><%= waitlist_passenger.passenger.ticket_status %></td>
+                <td><%= reservation.payment_status %></td>
+                <td>
+                  <%= form_with url: waitlist_reservation_path(waitlist_passenger.passenger_id), method: :delete do |form| %>
+                    <%= form.hidden_field :available_id, value: waitlist_passenger.available_id %>
+                    <%= form.hidden_field :train_detail_id, value: waitlist_passenger.train_detail_id %>
+                    <%= form.hidden_field :berth_class, value: waitlist_passenger.berth_class %>
+                    <%= form.hidden_field :date, value: reservation.date %>
+                    <%= form.hidden_field :reserved_id, value: reservation.id %>
+                    <%= form.hidden_field :passenger_id, value: waitlist_passenger.passenger_id %>
+                    <%= form.hidden_field :waitlist_id, value: waitlist_passenger.id %>
+                    <%= form.submit 'Cancel' %>
+                  <% end %>
+                </td>
+              </tr>
             <% end %>
           <% end %>
         <% end %>

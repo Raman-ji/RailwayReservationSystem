@@ -1,5 +1,7 @@
 class TrainDetailsController < ApplicationController
-  def index; end
+  def new
+    @train_detail = TrainDetail.new(departure_time: Time.now, arrival_time: Time.now)
+  end
 
   def create
     @train_detail = TrainDetail.new(train_detail_params)
