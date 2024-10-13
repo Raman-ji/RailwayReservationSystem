@@ -1,9 +1,20 @@
-<h3> Enter Details </h3>
+<h3>Enter Details</h3>
 <%= form_with model: @reservation, url: reservations_path, method: :post do |form| %>
+  <div class="form-section">
+    <h4>Select Existing Passengers</h4>
+    <div id="existing_passenger_list">
+      <% Passenger.all.each do |passenger| %>
+        <div class="passenger-option">
+          <%= check_box_tag "reservation[existing_passenger_ids][]" , passenger.id, false, id: "existing_passenger_#{passenger.id}" %>
+          <%= label_tag "existing_passenger_#{passenger.id}", "#{passenger.passenger_name} - #{passenger.date_of_birth} - #{passenger.gender}" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
 
-  <div id="passenger_detail">
+  <div id="passenger_detail" class="form-section">
+    <h4>Passenger Details</h4>
     <%= form.fields_for :passengers do |passenger_form| %>
-
       <div class="passenger-group">
         <%= passenger_form.label :passenger_name, 'Passenger Name' %>
         <%= passenger_form.text_field :passenger_name, required: true %>
@@ -15,35 +26,32 @@
         <%= passenger_form.select :gender, ['Female', 'Male', 'Others'], {}, { required: true } %>
         <button class="remove-passenger" type="button">Remove</button>
       </div>
-
     <% end %>
   </div>
 
-  <button id="add-button" type="button">Add More</button>
+  <button id="add-button" type="button">Add Passenger</button>
 
-  
-  <div class="form-group">
-    <%= form.label :berth_class, 'Class' %>
-    <%= form.select :berth_class, ['1AC', '2AC', 'General'] %>
+  <div class="form-section">
+    <div class="form-group">
+      <%= form.label :berth_class, 'Class' %>
+      <%= form.select :berth_class, ['1AC', '2AC', 'General'] %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :email, 'Email ID' %>
+      <%= form.email_field :email %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :phone_number, 'Phone Number' %>
+      <%= form.telephone_field :phone_number %>
+    </div>
   </div>
-
-  <div class="form-group">
-    <%= form.label :email, 'Email ID' %>
-    <%= form.email_field :email %>
-  </div>
-
-  <div class="form-group">
-    <%= form.label :phone_number, 'Phone Number' %>
-    <%= form.telephone_field :phone_number %>
-  </div>
-
-  
 
   <%= form.hidden_field :available_id, value: params[:available_id] %>
   <%= form.hidden_field :date, value: params[:date] %>
   <%= form.hidden_field :train_detail_id, value: params[:train_detail_id] %>
   <%= form.submit 'Submit' %>
-
 <% end %>
 
 <script>

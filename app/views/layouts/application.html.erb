@@ -16,7 +16,9 @@
     <%= stylesheet_link_tag 'reservations', media: 'all' %>
     <%= stylesheet_link_tag 'wait_list', media: 'all' %>
     <%= stylesheet_link_tag 'reservation_cancellation', media: 'all' %>
-
+    <% if controller_path.start_with?("devise") %>
+      <%= stylesheet_link_tag "devise_custom", media: "all" %>
+    <% end %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
@@ -25,23 +27,18 @@
   <body>
       <%# navbar start from here %>
     <nav>
-      <% if user_signed_in? %>
-        <div >
-          <%= link_to "Wait List", '/wait_list' %>
-          <%= link_to "Confirm", '/confirm_list' %>
-          <%= link_to 'Edit profile',edit_user_registration_path %>
-          <%= link_to 'Logout', destroy_user_session_path, method: :delete%>
+  <% if user_signed_in? %>
+    <div class="nav-left">
+      <%= link_to "Wait List", '/wait_list' %>
+      <%= link_to "Confirm", '/confirm_list' %>
+      <%= link_to 'Edit profile', edit_user_registration_path %>
+    </div>
+    <div class="nav-right">
+      <%= link_to 'Logout', destroy_user_session_path, method: :delete %>
+    </div>
+  <% end %>
+</nav>
 
-        </div>
-
-      <%else%>
-
-        <div>
-          <%= link_to 'Sign_up',new_user_registration_path, class: "navbar-brand" %>
-        </div>
-      <%end%>
-
-      </nav>
         <%# navbar ends here %>
     <% if flash.any? %>
       <div class="alert alert-danger" role="alert">

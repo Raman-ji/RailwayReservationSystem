@@ -1,110 +1,106 @@
-/* Main container for the form */
-#partial-container {
+body {
+  font-family: Arial, sans-serif;
   background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  margin: 0;
   padding: 20px;
-  margin-bottom: 20px;
 }
 
-/* Reservation form */
-.reservation-form {
-  margin: 20px auto;
-  max-width: 700px;
-}
-
-/* Title styling for the form */
 h3 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 15px;
   text-align: center;
-  font-weight: bold;
+  color: #333;
 }
 
-/* Form section for each passenger */
+h4 {
+  color: #555;
+}
+
 .form-section {
-  margin-bottom: 15px;
-  background-color: #f1f1f1;
+  margin: 20px 0;
   padding: 15px;
-  border-radius: 8px;
+  background-color: #fff;
+  border-radius: 5px;
   border: 1px solid #ddd;
 }
 
-/* Label styling */
-.form-section label,
-.form-group label {
-  font-size: 1.1rem;
-  color: #333;
-  margin-bottom: 5px;
-  display: block;
+.passenger-option {
+  margin-bottom: 10px;
 }
 
-/* Uniform sizing for input, select, and date fields */
-.form-section input[type="text"],
-.form-section input[type="date"],
-.form-section select,
-.form-group input[type="email"],
-.form-group input[type="tel"],
-.form-group select {
+.passenger-group {
+  margin-bottom: 15px;
+}
+
+.passenger-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.passenger-group input[type="text"],
+.passenger-group input[type="date"],
+.passenger-group select,
+button {
   width: 100%;
-  max-width: 500px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 8px;
+  margin: 5px 0;
   font-size: 1rem;
-  transition: border-color 0.3s;
+  border: 1px solid #ccc;
+  border-radius: 4px;
   box-sizing: border-box;
 }
 
-/* Ensure consistent behavior when focused */
-.form-section input[type="text"]:focus,
-.form-section input[type="date"]:focus,
-.form-section select:focus,
-.form-group input[type="email"]:focus,
-.form-group input[type="tel"]:focus,
-.form-group select:focus {
-  border-color: #007bff;
-  outline: none;
+button.remove-passenger {
+  background-color: #ff4c4c;
+  color: white;
 }
 
-/* Submit button styling */
-input[type="submit"] {
-  background-color: #28a745;
+button.remove-passenger:hover {
+  background-color: #e63939;
+}
+
+button#add-button {
+  width: 100%;
+  padding: 10px;
+  margin: 20px 0;
+  background-color: #4CAF50;
   color: white;
-  padding: 10px 20px;
   border: none;
-  border-radius: 5px;
-  font-size: 1.2rem;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  max-width: 500px;
+}
+
+button#add-button:hover {
+  background-color: #45a049;
+}
+
+.form-group {
+  margin: 20px 0;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="email"],
+input[type="tel"],
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background-color:#4CAF50;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 input[type="submit"]:hover {
-  background-color: #218838;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  #partial-container {
-    padding: 15px;
-  }
-
-  h3 {
-    font-size: 1.5rem;
-  }
-
-  .form-section input[type="text"],
-  .form-section input[type="date"],
-  .form-section select,
-  .form-group input[type="email"],
-  .form-group input[type="tel"],
-  .form-group select {
-    max-width: 100%;
-  }
-
-  input[type="submit"] {
-    width: 100%;
-  }
+  background-color: #0056b3;
 }

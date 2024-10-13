@@ -1,0 +1,143 @@
+body {
+  background-color: #f0f4f8;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+.Login {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  margin: 0 auto;
+}
+
+h5 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.field {
+  margin-bottom: 15px;
+}
+
+.field label {
+  display: inline-block;
+}
+
+.field input[type="email"],
+.field input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.field input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+.actions input[type="submit"] {
+  background-color: #059669;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.actions input[type="submit"]:hover {
+  background-color: #047857;
+}
+
+a {
+  color: #047857;
+  text-decoration: none;
+  display: block;
+  margin-top: 10px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+nav {
+  background-color: #047857;
+  color: white;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.nav-left a {
+  color: white;
+  text-decoration: none;
+  margin-right: 15px;
+  font-weight: bold;
+}
+
+.nav-right a {
+  color: white;
+  text-decoration: none;
+  margin-left: auto;
+  margin-right: 30px;
+  font-weight: bold;
+}
+
+.nav-left a:hover,
+.nav-right a:hover {
+  text-decoration: underline;
+}
+
+.alert {
+  background-color: #f87171;
+  color: white;
+  padding: 10px;
+  margin: 20px 0;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 60px);
+  margin-top: 60px;
+}
+
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .container {
+    margin-top: 80px;
+  }
+
+  .Login {
+    max-width: 100%;
+    padding: 20px;
+  }
+}

@@ -1,108 +1,111 @@
-/* General body styling */
 body {
    font-family: 'Roboto', sans-serif;
    background-color: #f0f4f8;
    margin: 0;
    padding: 0;
-   color: #333; 
-}
-
-/* Notice and alert styling */
-.notice, .alert {
+   color: #333;
+ }
+ 
+ .notice, .alert {
    padding: 15px;
-   margin: 15px 20px; 
+   margin: 15px 20px;
    border-radius: 8px;
-   font-size: 16px; 
-   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
-}
-
-.notice {
-   background-color: #e0f7fa; 
-   color: #00695c; 
-}
-.alert {
-   background-color: #ffebee; 
+   font-size: 16px;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+ }
+ 
+ .notice {
+   background-color: #e0f7fa;
+   color: #00695c;
+ }
+ 
+ .alert {
+   background-color: #ffebee;
    color: #b71c1c;
-}
-
-/* Navbar styling */
-nav {
-   background-color: #00796b; 
-   padding: 15px 20px; 
+ }
+ 
+ nav {
+   background-color: #00796b;
+   padding: 15px 20px;
    display: flex;
-   justify-content: space-between; 
+   justify-content: space-between;
    align-items: center;
-}
-
-nav a {
+ }
+ 
+ .nav-left {
+   display: flex;
+   gap: 15px;
+ }
+ 
+ .nav-right {
+   margin-left: auto;
+ }
+ 
+ nav a {
    color: white;
    text-decoration: none;
    padding: 10px 15px;
    font-weight: 600;
-   transition: background-color 0.3s, transform 0.3s; 
-}
-
-nav a:hover {
+   transition: background-color 0.3s, transform 0.3s;
+ }
+ 
+ nav a:hover {
    background-color: #004d40;
    border-radius: 5px;
    transform: scale(1.05);
-}
-
-/* Sign up link styling */
-.navbar-brand {
-   font-size: 20px; 
+ }
+ 
+ .navbar-brand {
+   font-size: 20px;
    color: white;
-   font-weight: 700; 
-}
-
-/* Header styling */
-header {
+   font-weight: 700;
+ }
+ 
+ header {
    margin-bottom: 20px;
-   background-color: #004d40; 
+   background-color: #004d40;
    color: white;
    padding: 20px;
-   text-align: center; 
-   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
-}
-
-/* Yield content styling */
-main {
-   padding: 30px; 
-   background-color: #ffffff; 
+   text-align: center;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+ }
+ 
+ main {
+   padding: 30px;
+   background-color: #ffffff;
    border-radius: 10px;
-   margin: 20px auto; 
-   max-width: 800px; 
-   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
-}
-
-/* Button styling */
-button {
-   background-color: #00796b; 
+   margin: 20px auto;
+   max-width: 800px;
+   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+ }
+ 
+ button {
+   background-color: #00796b;
    color: white;
    border: none;
    padding: 10px 20px;
    border-radius: 5px;
    cursor: pointer;
    transition: background-color 0.3s, transform 0.3s;
-}
-
-button:hover {
-   background-color: #004d40; 
-   transform: scale(1.05); 
-}
-
-/* Media query for responsiveness */
-@media (max-width: 600px) {
+ }
+ 
+ button:hover {
+   background-color: #004d40;
+   transform: scale(1.05);
+ }
+ 
+ @media (max-width: 600px) {
    nav {
-      flex-direction: column; 
-      align-items: flex-start;
+     flex-direction: column;
+     align-items: flex-start;
    }
-
+ 
    nav a {
-      margin-bottom: 10px; 
+     margin-bottom: 10px;
    }
-
+ 
    main {
-      margin: 10px; 
+     margin: 10px;
    }
-}
+ }
+ 

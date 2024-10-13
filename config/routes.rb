@@ -25,5 +25,5 @@ Rails.application.routes.draw do
       delete 'confirm', to: 'reservations#destroy_confirm'
       delete 'waitlist', to: 'reservations#destroy_wait_list'
     end
-  end  
+  end
 end

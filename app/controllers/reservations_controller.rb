@@ -3,7 +3,6 @@ class ReservationsController < ApplicationController
   before_action :reservation_params, only: :create
   def new
     @reservation = Reservation.new
-    @reservation.passengers.build
   end
 
   def destroy_wait_list
@@ -34,8 +33,24 @@ class ReservationsController < ApplicationController
 
   def create
     @reservation = Reservation.new(reservation_params)
+
+    existing_passenger_ids = params[:reservation][:existing_passenger_ids].reject(&:blank?)
+    new_passengers = params[:reservation][:passengers_attributes].present? && params[:reservation][:passengers_attributes].any? { |_, v| v[:passenger_name].present? }
+
+    # Validating if at least one passenger exists
+    unless existing_passenger_ids.present? || new_passengers
+      redirect_to new_search_path, notice: 'Please select existing passengers or add new passengers.'
+      return
+    end
     # After payment manage payment status and ticket status
     if @reservation.save
+      byebug
+      if params[:reservation][:existing_passenger_ids].present?
+        existing_passenger_ids = params[:reservation][:existing_passenger_ids].reject(&:blank?)
+        existing_passenger_ids.each do |passenger_id|
+          @reservation.passengers << Passenger.find(passenger_id)
+        end
+      end
       count = @reservation.passengers.count
       passengers_detail = @reservation.passengers
       @reservation.check_and_create_seat(
