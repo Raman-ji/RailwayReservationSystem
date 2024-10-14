@@ -45,6 +45,11 @@ class Reservation < ApplicationRecord
           available.general_available.zero? ? nil : seat_allotment(berth_class)
         end
       passenger.seat_number = seat
+      if passenger.seat_number.nil?
+        passenger.ticket_status = 'Pending'
+      else
+        passenger.ticket_status = 'Done'
+      end
       passenger.save
     end
   end

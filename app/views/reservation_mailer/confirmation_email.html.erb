@@ -1,0 +1,34 @@
+<h1>Confirm Ticket Booking Detail</h1>
+
+<% @reservation.passengers.each do |passenger| %>
+  <% if @reservation.date >= Date.today %>
+    <% if @reservation.payment_status == 'Done' && passenger.ticket_status == 'Done' %>
+      <p>
+        Name: <%= passenger.passenger_name %><br>
+        Seat Number: <%= passenger.seat_number %><br>
+        PNR: <%= passenger.pnr %><br>
+        Travel Date: <%= @reservation.date %><br>
+        Date of Birth: <%= passenger.date_of_birth %><br>
+        Ticket Status: <%= passenger.ticket_status %><br>
+        Gender: <%= passenger.gender %>
+      </p>
+    <% end %>
+  <% end %>
+<% end %>
+
+<h1>Wait List Passengers</h1>
+
+<% @reservation.passengers.each do |passenger| %>
+  <% if @reservation.date >= Date.today %>
+    <% if @reservation.payment_status == 'Done' && passenger.ticket_status == 'Pending' %>
+      <p>
+        Name: <%= passenger.passenger_name %><br>
+        PNR: <%= passenger.pnr %><br>
+        Travel Date: <%= @reservation.date %><br>
+        Date of Birth: <%= passenger.date_of_birth %><br>
+        Ticket Status: <%= passenger.ticket_status %><br>
+        Gender: <%= passenger.gender %>
+      </p>
+    <% end %>
+  <% end %>
+<% end %>

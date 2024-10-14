@@ -10,6 +10,8 @@ class ReservationsController < ApplicationController
     passenger = Passenger.find(params[:passenger_id].to_i)
     cancel_waiting_passenger( waiting_passenger, passenger)
     redirect_to wait_list_path, notice: 'WaitList Cancelled !'
+    reservation = passenger.reservation
+    send_cancellation_email(reservation, passenger)
   end
 
   def destroy_confirm
@@ -29,22 +31,24 @@ class ReservationsController < ApplicationController
       passenger.save
       redirect_to confirm_list_path, notice: 'Reservation Cancelled !'
     end
+    reservation = passenger.reservation
+    send_cancellation_email(reservation, passenger)
   end
 
   def create
     @reservation = Reservation.new(reservation_params)
+  
+    existing_passenger_ids = reservation_params[:existing_passenger_ids]&.reject(&:blank?)
 
-    existing_passenger_ids = params[:reservation][:existing_passenger_ids].reject(&:blank?)
-    new_passengers = params[:reservation][:passengers_attributes].present? && params[:reservation][:passengers_attributes].any? { |_, v| v[:passenger_name].present? }
-
+    passengers = reservation_params[:passengers_attributes]&.to_h
+    new_passengers = passengers.present? && passengers.any? { |_, v| v[:passenger_name].present? }
     # Validating if at least one passenger exists
     unless existing_passenger_ids.present? || new_passengers
       redirect_to new_search_path, notice: 'Please select existing passengers or add new passengers.'
       return
     end
-    # After payment manage payment status and ticket status
+
     if @reservation.save
-      byebug
       if params[:reservation][:existing_passenger_ids].present?
         existing_passenger_ids = params[:reservation][:existing_passenger_ids].reject(&:blank?)
         existing_passenger_ids.each do |passenger_id|
@@ -62,7 +66,11 @@ class ReservationsController < ApplicationController
       )
 
       add_waiting(passengers_detail)
-      redirect_to new_search_path, notice: 'Reservation created'
+     
+      # After payment manage payment status and ticket status and write this code in transaction block if payment is not done then rollback should be perform
+      @reservation.payment_status = 'Done' #change this line after payment stripe
+      @reservation.save
+      send_confirmation_email(@reservation.id)
     else
       redirect_to new_search_path, notice: @reservation.errors.full_messages
     end
@@ -70,6 +78,17 @@ class ReservationsController < ApplicationController
 
   private
 
+  def send_confirmation_email(reserved_id)
+    @reservation = Reservation.find(reserved_id)
+    ReservationMailer.confirmation_email(@reservation).deliver_now
+    flash[:notice] = 'Confirmation email sent to the Passenger.'
+    redirect_to new_search_path, notice: 'Reservation created'
+  end
+
+  def send_cancellation_email(reservation, passenger)
+    ReservationMailer.cancellation_email(reservation, passenger).deliver_now
+    flash[:notice] = 'Cancellation email sent to the Passenger.'
+  end
   def reservation_params
     params.require(:reservation).permit(
       :email,

@@ -26,4 +26,10 @@ Rails.application.routes.draw do
       delete 'waitlist', to: 'reservations#destroy_wait_list'
     end
   end
+
+  resources :reservations do
+    member do
+      get 'confirmation_email'
+    end
+  end
 end
