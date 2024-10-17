@@ -32,4 +32,18 @@ Rails.application.routes.draw do
       get 'confirmation_email'
     end
   end
+
+  resources :reservations do
+    member do
+      post :refund_payment
+    end
+  end
+
+
+  post 'payments/create', to: 'payments#create'
+  get 'payments/create', to: 'payments#create'
+  get 'checkout/success', to: 'payments#success', as: 'checkout_success'
+  get 'checkout/cancel', to: 'payments#cancel', as: 'checkout_cancel'
+  post 'payments/refund', to: 'payments#refund'
+  get 'payments/refund', to: 'payments#refund'
 end

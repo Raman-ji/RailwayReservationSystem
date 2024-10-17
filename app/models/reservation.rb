@@ -2,6 +2,7 @@ class Reservation < ApplicationRecord
   serialize :payment_status, coder: JSON
   has_many :wait_list, dependent: :destroy
   has_many :passengers, dependent: :destroy
+  has_many :payments, dependent: :destroy
   belongs_to :train_detail
   belongs_to :available
   accepts_nested_attributes_for :passengers, allow_destroy: true
