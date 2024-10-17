@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_11_133136) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_16_071246) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -59,6 +59,20 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_11_133136) do
     t.datetime "updated_at", null: false
     t.integer "reservation_id", null: false
     t.index ["reservation_id"], name: "index_passengers_on_reservation_id"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.integer "reservation_id"
+    t.string "payment_intent_id"
+    t.date "date"
+    t.integer "train_id"
+    t.string "berth"
+    t.decimal "amount"
+    t.string "status"
+    t.string "currency"
+    t.text "passenger_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "reservations", force: :cascade do |t|

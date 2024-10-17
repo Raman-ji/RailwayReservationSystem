@@ -8,15 +8,20 @@ class ReservationsController < ApplicationController
   def destroy_wait_list
     waiting_passenger = WaitList.find(params[:waitlist_id].to_i)
     passenger = Passenger.find(params[:passenger_id].to_i)
-    cancel_waiting_passenger( waiting_passenger, passenger)
-    redirect_to wait_list_path, notice: 'WaitList Cancelled !'
-    reservation = passenger.reservation
-    send_cancellation_email(reservation, passenger)
+    cancel_waiting_passenger(waiting_passenger, passenger)
+
+    payment = Payment.find_by(reservation_id: passenger.reservation.id, train_id: passenger.reservation.train_detail.id,
+                               berth: passenger.reservation.berth_class)
+    redirect_to payments_refund_url(payment_intent_id: payment.payment_intent_id,
+                                     train_detail_id: passenger.reservation.train_detail.id,
+                                     berth: passenger.reservation.berth_class, passenger_id: params[:passenger_id].to_i), notice: 'Reservation Cancelled !'
   end
 
   def destroy_confirm
     passenger = Passenger.find(params[:id].to_i)
-    if WaitList.exists?(available_id: params[:available_id], train_detail_id: params[:train_detail_id], berth_class: params[:berth_class], dates: params[:date])
+
+    if WaitList.exists?(available_id: params[:available_id], train_detail_id: params[:train_detail_id],
+                        berth_class: params[:berth_class], dates: params[:date])
       waiting_passenger = WaitList.find_by(
         available_id: params[:available_id],
         train_detail_id: params[:train_detail_id],
@@ -29,66 +34,66 @@ class ReservationsController < ApplicationController
       passenger.ticket_status = 'Cancelled'
       passenger.seat_number = nil
       passenger.save
-      redirect_to confirm_list_path, notice: 'Reservation Cancelled !'
     end
-    reservation = passenger.reservation
-    send_cancellation_email(reservation, passenger)
+
+    payment = Payment.find_by(reservation_id: passenger.reservation.id, train_id: passenger.reservation.train_detail.id,
+                                berth: passenger.reservation.berth_class)
+
+    redirect_to payments_refund_url(payment_intent_id: payment.payment_intent_id,
+                                     train_detail_id: passenger.reservation.train_detail.id,
+                                     berth: passenger.reservation.berth_class, passenger_id: params[:id].to_i),notice: 'Reservation Cancelled!'
   end
 
   def create
-    @reservation = Reservation.new(reservation_params)
-  
-    existing_passenger_ids = reservation_params[:existing_passenger_ids]&.reject(&:blank?)
+    ActiveRecord::Base.transaction do
+      @reservation = Reservation.new(reservation_params.except(:existing_passenger_ids))
+      @train_id = params[:train_detail_id].to_i
+      existing_passenger_ids = reservation_params[:existing_passenger_ids]&.reject(&:blank?)
+      passengers = reservation_params[:passengers_attributes]&.to_h
+      new_passengers = passengers.present? && passengers.any? { |_, v| v[:passenger_name].present? }
 
-    passengers = reservation_params[:passengers_attributes]&.to_h
-    new_passengers = passengers.present? && passengers.any? { |_, v| v[:passenger_name].present? }
-    # Validating if at least one passenger exists
-    unless existing_passenger_ids.present? || new_passengers
-      redirect_to new_search_path, notice: 'Please select existing passengers or add new passengers.'
-      return
-    end
-
-    if @reservation.save
-      if params[:reservation][:existing_passenger_ids].present?
-        existing_passenger_ids = params[:reservation][:existing_passenger_ids].reject(&:blank?)
-        existing_passenger_ids.each do |passenger_id|
-          @reservation.passengers << Passenger.find(passenger_id)
-        end
+      # Validating if at least one passenger exists
+      unless existing_passenger_ids.present? || new_passengers
+        redirect_to new_search_path, notice: 'Please select existing passengers or add new passengers.'
+        return
       end
-      count = @reservation.passengers.count
-      passengers_detail = @reservation.passengers
-      @reservation.check_and_create_seat(
-        @reservation.date,
-        @reservation.train_detail_id,
-        @reservation.available_id,
-        count,
-        passengers_detail
-      )
 
-      add_waiting(passengers_detail)
-     
-      # After payment manage payment status and ticket status and write this code in transaction block if payment is not done then rollback should be perform
-      @reservation.payment_status = 'Done' #change this line after payment stripe
-      @reservation.save
-      send_confirmation_email(@reservation.id)
-    else
-      redirect_to new_search_path, notice: @reservation.errors.full_messages
+      if @reservation.save
+        if params[:reservation][:existing_passenger_ids].present?
+          existing_passenger_ids = params[:reservation][:existing_passenger_ids].reject(&:blank?)
+          existing_passenger_ids.each do |passenger_id|
+            @reservation.passengers << Passenger.find(passenger_id)
+          end
+        end
+
+        count = @reservation.passengers.count
+        passengers_detail = @reservation.passengers
+        @reservation.check_and_create_seat(
+          @reservation.date,
+          @reservation.train_detail_id,
+          @reservation.available_id,
+          count,
+          passengers_detail
+        )
+
+        add_waiting(passengers_detail)
+        # @reservation.payment_status = 'Done' #change this line after payment stripe
+        @reservation.save
+        redirect_to payments_create_url(train_detail_id: @reservation.train_detail_id,
+                                        berth_class: @reservation.berth_class, reserved_id: @reservation.id)
+      else
+        redirect_to new_search_path, notice: @reservation.errors.full_messages
+      end
     end
   end
 
   private
 
-  def send_confirmation_email(reserved_id)
-    @reservation = Reservation.find(reserved_id)
-    ReservationMailer.confirmation_email(@reservation).deliver_now
-    flash[:notice] = 'Confirmation email sent to the Passenger.'
-    redirect_to new_search_path, notice: 'Reservation created'
-  end
-
   def send_cancellation_email(reservation, passenger)
     ReservationMailer.cancellation_email(reservation, passenger).deliver_now
     flash[:notice] = 'Cancellation email sent to the Passenger.'
   end
+
   def reservation_params
     params.require(:reservation).permit(
       :email,
@@ -102,7 +107,8 @@ class ReservationsController < ApplicationController
         passenger_name
         date_of_birth
         gender
-      ]
+      ],
+      existing_passenger_ids: []
     )
   end
 
@@ -135,9 +141,10 @@ class ReservationsController < ApplicationController
     end
   end
 
-  def manage_waitlist(waiting_passenger, passenger)
+  def manage_waitlist(_waiting_passenger, passenger)
     # Find the reservation for the passenger whose seat number is being assigned
-    wait_first_passenger = WaitList.find_by(available_id: params[:available_id], train_detail_id: params[:train_detail_id], berth_class: params[:berth_class] ,dates: params[:date])
+    wait_first_passenger = WaitList.find_by(available_id: params[:available_id],
+                                            train_detail_id: params[:train_detail_id], berth_class: params[:berth_class], dates: params[:date])
     wait_passenger = Passenger.find_by(id: wait_first_passenger.passenger_id)
     wait_passenger.seat_number = passenger.seat_number
     wait_passenger.ticket_status = 'Done'
