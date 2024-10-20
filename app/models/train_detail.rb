@@ -18,11 +18,6 @@ class TrainDetail < ApplicationRecord
               :class_general_count, :class_general_price
   end
 
-  before_create do
-    self.departure_time ||= Time.current
-    self.arrival_time ||= Time.current
-  end
-
   def self.ransackable_attributes(_auth_object = nil)
     %w[arrival_time class_1a_count class_1a_price class_2a_count class_2a_price class_general_count
        class_general_price created_at days departure_time distance_km from id id_value to train_code train_name travel_time_hrs updated_at]
@@ -32,11 +27,13 @@ class TrainDetail < ApplicationRecord
     %w[availables reservations seats wait_lists]
   end
   before_create do
+    self.departure_time = Time.current if departure_time.nil?
+    self.arrival_time = Time.current if arrival_time.nil?
     self.from = from.titleize if from.present?
     self.to = to.titleize if to.present?
     self.train_name = train_name.titleize if train_name.present?
-    self.class_1a_price = 0 if class_1a_price.negative? || class_1a_price.nil?
-    self.class_2a_price = 0 if class_2a_price.negative? || class_2a_price.nil?
-    self.class_general_price = 0 if class_general_price.negative? || class_general_price.nil?
+    self.class_1a_price = 0 if  class_1a_price.nil? || class_1a_price.negative?
+    self.class_2a_price = 0 if class_2a_price.nil? || class_2a_price.negative?
+    self.class_general_price = 0 if class_general_price.nil? || class_general_price.negative?
   end
 end

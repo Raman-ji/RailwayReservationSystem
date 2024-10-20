@@ -12,8 +12,8 @@ class Reservation < ApplicationRecord
   end
 
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP, message: 'must be a valid email address' }
-  validates :phone_number, format: { with: /\A\d{10}\z/, message: 'must be a valide phone number ' }
-  
+  validates :phone_number, format: { with: /\A\d{10}\z/, message: 'must be a valid phone number' }
+
   def self.ransackable_attributes(_auth_object = nil)
     %w[
       available_id
@@ -38,13 +38,13 @@ class Reservation < ApplicationRecord
   def check_availability(passenger_count, passengers)
     passengers.each do |passenger|
       seat = case berth_class
-        when '2AC'
-          available._2AC_available.zero? ? nil : seat_allotment(berth_class)
-        when '1AC'
-          available._1AC_available.zero? ? nil : seat_allotment(berth_class)
-        else
-          available.general_available.zero? ? nil : seat_allotment(berth_class)
-        end
+             when '2AC'
+               available._2AC_available.zero? ? nil : seat_allotment(berth_class)
+             when '1AC'
+               available._1AC_available.zero? ? nil : seat_allotment(berth_class)
+             else
+               available.general_available.zero? ? nil : seat_allotment(berth_class)
+             end
       passenger.seat_number = seat
       if passenger.seat_number.nil?
         passenger.ticket_status = 'Pending'
@@ -88,12 +88,11 @@ class Reservation < ApplicationRecord
     seat = Seat.create(dates: date, train_detail_id: train_id, available_id: availability_id)
     seat.update(available_2AC_seats: (1..seat.train_detail.class_2a_count).to_a, occupied_2AC_seats: Array(nil))
     seat.update(available_1AC_seats: (1..seat.train_detail.class_1a_count).to_a, occupied_1AC_seats: Array(nil))
-    seat.update(available_general_seats: (1..seat.train_detail.class_general_count).to_a,
-                occupied_general_seats: Array(nil))
+    seat.update(available_general_seats: (1..seat.train_detail.class_general_count).to_a, occupied_general_seats: Array(nil))
     seat
   end
 
-  # after getting a seat decrease there count
+  # after getting a seat decrease their count
   def decrease_availability(berth)
     case berth
     when '2AC'

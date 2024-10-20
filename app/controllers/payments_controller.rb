@@ -89,7 +89,7 @@ class PaymentsController < ApplicationController
                                    })
 
     payment = Payment.find_by(payment_intent_id:)
-    payment.update(status: 'refunded')
+    payment.update(status: 'Refunded')
     payment.update(passenger_name: passenger.passenger_name)
     reservation = passenger.reservation
     send_cancellation_email(reservation, passenger)
