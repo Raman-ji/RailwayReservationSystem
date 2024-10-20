@@ -47,7 +47,4 @@ ActiveAdmin.register Payment do
     end
     active_admin_comments
   end
-
-
-
 end

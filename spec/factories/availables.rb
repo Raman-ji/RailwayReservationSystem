@@ -1,4 +1,3 @@
-
 FactoryBot.define do
   factory :available do
     dates { Faker::Date.forward(days: 30) }

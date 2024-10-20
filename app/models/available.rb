@@ -38,6 +38,6 @@ class Available < ApplicationRecord
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    %w[reservations seat train_detail wait_lists] # Adjust as necessary
+    %w[reservations seat train_detail wait_lists]
   end
 end

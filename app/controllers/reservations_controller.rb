@@ -6,42 +6,62 @@ class ReservationsController < ApplicationController
   end
 
   def destroy_wait_list
-    waiting_passenger = WaitList.find(params[:waitlist_id].to_i)
-    passenger = Passenger.find(params[:passenger_id].to_i)
-    cancel_waiting_passenger(waiting_passenger, passenger)
+    ActiveRecord::Base.transaction do
+      waiting_passenger = WaitList.find(params[:waitlist_id].to_i)
+      passenger = Passenger.find(params[:passenger_id].to_i)
 
-    payment = Payment.find_by(reservation_id: passenger.reservation.id, train_id: passenger.reservation.train_detail.id,
-                               berth: passenger.reservation.berth_class)
-    redirect_to payments_refund_url(payment_intent_id: payment.payment_intent_id,
-                                     train_detail_id: passenger.reservation.train_detail.id,
-                                     berth: passenger.reservation.berth_class, passenger_id: params[:passenger_id].to_i), notice: 'Reservation Cancelled !'
+      cancel_waiting_passenger(waiting_passenger, passenger)
+
+      payment = Payment.find_by(
+        reservation_id: passenger.reservation.id,
+        train_id: passenger.reservation.train_detail.id,
+        berth: passenger.reservation.berth_class
+      )
+
+      raise ActiveRecord::Rollback, 'Payment not found' unless payment
+
+      redirect_to payments_refund_url(
+        payment_intent_id: payment.payment_intent_id,
+        train_detail_id: passenger.reservation.train_detail.id,
+        berth: passenger.reservation.berth_class,
+        passenger_id: params[:passenger_id].to_i
+      ), notice: 'Reservation Cancelled !'
+    end
+  rescue ActiveRecord::Rollback
+    redirect_to waitlist_url, alert: 'Failed to cancel reservation, please try again.'
   end
 
   def destroy_confirm
-    passenger = Passenger.find(params[:id].to_i)
+    ActiveRecord::Base.transaction do
+      passenger = Passenger.find(params[:id].to_i)
 
-    if WaitList.exists?(available_id: params[:available_id], train_detail_id: params[:train_detail_id],
-                        berth_class: params[:berth_class], dates: params[:date])
-      waiting_passenger = WaitList.find_by(
-        available_id: params[:available_id],
-        train_detail_id: params[:train_detail_id],
-        berth_class: params[:berth_class]
-      )
-      manage_waitlist(waiting_passenger, passenger)
-    else
-      increase_availability(params[:berth_class], passenger)
-      seat_delocate(params[:berth_class], params[:available_id], params[:train_detail_id], params[:date], passenger)
-      passenger.ticket_status = 'Cancelled'
-      passenger.seat_number = nil
-      passenger.save
-    end
+      if WaitList.exists?(available_id: params[:available_id], train_detail_id: params[:train_detail_id],
+                          berth_class: params[:berth_class], dates: params[:date])
+        waiting_passenger = WaitList.find_by(
+          available_id: params[:available_id],
+          train_detail_id: params[:train_detail_id],
+          berth_class: params[:berth_class]
+        )
+        manage_waitlist(waiting_passenger, passenger)
+      else
+        increase_availability(params[:berth_class], passenger)
+        seat_delocate(params[:berth_class], params[:available_id], params[:train_detail_id], params[:date], passenger)
+        passenger.ticket_status = 'Cancelled'
+        passenger.seat_number = nil
+        passenger.save
+      end
 
-    payment = Payment.find_by(reservation_id: passenger.reservation.id, train_id: passenger.reservation.train_detail.id,
+      payment = Payment.find_by(reservation_id: passenger.reservation.id, train_id: passenger.reservation.train_detail.id,
                                 berth: passenger.reservation.berth_class)
 
-    redirect_to payments_refund_url(payment_intent_id: payment.payment_intent_id,
-                                     train_detail_id: passenger.reservation.train_detail.id,
-                                     berth: passenger.reservation.berth_class, passenger_id: params[:id].to_i),notice: 'Reservation Cancelled!'
+      raise ActiveRecord::Rollback, 'Payment not found' unless payment
+
+      redirect_to payments_refund_url(payment_intent_id: payment.payment_intent_id,
+                                      train_detail_id: passenger.reservation.train_detail.id,
+                                      berth: passenger.reservation.berth_class, passenger_id: params[:id].to_i), notice: 'Reservation Cancelled!'
+    end
+  rescue ActiveRecord::Rollback
+    redirect_to waitlist_url, alert: 'Failed to cancel reservation, please try again.'
   end
 
   def create
@@ -77,7 +97,6 @@ class ReservationsController < ApplicationController
         )
 
         add_waiting(passengers_detail)
-        # @reservation.payment_status = 'Done' #change this line after payment stripe
         @reservation.save
         redirect_to payments_create_url(train_detail_id: @reservation.train_detail_id,
                                         berth_class: @reservation.berth_class, reserved_id: @reservation.id)
@@ -177,7 +196,6 @@ class ReservationsController < ApplicationController
 
   def cancel_waiting_passenger(waiting_passenger, passenger)
     passenger.ticket_status = 'Cancelled'
-    # refund logic remains
     passenger.save
     waiting_passenger.destroy
   end

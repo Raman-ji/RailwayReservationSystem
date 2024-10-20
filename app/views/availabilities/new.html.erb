@@ -1,13 +1,12 @@
-<%# <% finding availabilites if not existing then creating it %> 
 <% Available.exists?(dates: params[:date], train_detail_id: params[:train_id]) ? @available = Available.find_by(dates: params[:date], train_detail_id: params[:train_id]) : @available = Available.create!(dates: params[:date], train_detail_id: params[:train_id]) %>
 
 <div class= "availability-container">
   <%= form_with url: new_reservation_path, method: :get do |form| %>
     <h3> Availabilities </h3>
     <% train = TrainDetail.find(params[:train_id]) %>
-    <% berth_2ac = train.class_2a_count%>
-    <% berth_1ac = train.class_1a_count%>
-    <% berth_genral = train.class_general_count%>
+    <% berth_2ac = @available._2AC_available%>
+    <% berth_1ac = @available._1AC_available%>
+    <% berth_genral = @available.general_available%>
 
     <table>
      <thead>
@@ -23,8 +22,8 @@
       <tbody>
         <tr>
           <td><%= params[:date]%></td>
-          <td><%= berth_1ac %></td>
           <td><%= berth_2ac %></td>
+          <td><%= berth_1ac %></td>
           <td><%= berth_genral %></td>
         </tr>
 

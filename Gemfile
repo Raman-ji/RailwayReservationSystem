@@ -10,8 +10,6 @@ gem 'devise'
 # Add the Stripe gem for handling payments
 gem 'stripe'
 
-
-
 gem 'rails_refactor'
 
 gem 'activeadmin'
