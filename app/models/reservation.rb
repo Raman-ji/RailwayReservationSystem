@@ -13,7 +13,7 @@ class Reservation < ApplicationRecord
 
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP, message: 'must be a valid email address' }
   validates :phone_number, format: { with: /\A\d{10}\z/, message: 'must be a valide phone number ' }
-  
+
   def self.ransackable_attributes(_auth_object = nil)
     %w[
       available_id

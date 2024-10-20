@@ -13,6 +13,8 @@ class Passenger < ApplicationRecord
   before_save :generate_pnr
 
   def date_of_birth_validity
+    return if date_of_birth.blank?
+
     today = Date.today
     hundred_ten_years_ago = today - 110.years
     dob = Date.parse(self.date_of_birth)

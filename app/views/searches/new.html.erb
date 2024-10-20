@@ -6,12 +6,12 @@
 
     <div class = "from" >
     <%= form.label :from, "From: *" %>
-    <%= form.select :from, Search.order(:city).pluck(:city),{ }, { required: true} %>
+    <%= form.select :from, TrainDetail.order(:from).distinct.pluck(:from),{ }, { required: true} %>
     </div>
 
     <div class = "to">
     <%= form.label :to, "To: *" %>  
-    <%= form.select :to, Search.order(:city).pluck(:city), { }, {required: true} %>
+    <%= form.select :to, TrainDetail.order(:to).distinct.pluck(:to), { }, {required: true} %>
     </div>
 
     <div class = "date">
