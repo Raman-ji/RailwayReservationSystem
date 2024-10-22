@@ -84,6 +84,5 @@ test:
 #
 production:
   <<: *default
-  database: railway_reservation_system_production
-  username: railway_reservation_system
-  password: <%= ENV["RAILWAY_RESERVATION_SYSTEM_DATABASE_PASSWORD"] %>
+  url: <%= ENV['DATABASE_URL']%>
+  database: ENV['DATABASE_NAME']
