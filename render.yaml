@@ -19,8 +19,4 @@ services:
       - key: RAILS_MASTER_KEY
         sync: false
       - key: WEB_CONCURRENCY
-<<<<<<< HEAD
         value: 2
-=======
-        value: 2 
->>>>>>> c959316851985c340897361f8fe2a2beb57ae262
