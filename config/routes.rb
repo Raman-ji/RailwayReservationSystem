@@ -27,19 +27,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :reservations do
-    member do
-      get 'confirmation_email'
-    end
-  end
-
-  resources :reservations do
-    member do
-      post :refund_payment
-    end
-  end
-
-
   post 'payments/create', to: 'payments#create'
   get 'payments/create', to: 'payments#create'
   get 'checkout/success', to: 'payments#success', as: 'checkout_success'
