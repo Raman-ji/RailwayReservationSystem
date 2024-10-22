@@ -20,7 +20,7 @@ gem 'sassc-rails'
 gem 'sprockets-rails'
 
 # Use pg as the database for Active Record
-gem "pg", "~> 1.1"
+gem 'pg', '~> 1.1'
 
 # Use the Puma web server [https://github.com/puma/puma]
 gem 'puma', '>= 5.0'
@@ -73,8 +73,8 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 
-  gem 'error_highlight', '>= 0.4.0', platforms: [:ruby]
   gem 'byebug'
+  gem 'error_highlight', '>= 0.4.0', platforms: [:ruby]
 end
 
 group :test do
@@ -83,5 +83,5 @@ group :test do
   gem 'selenium-webdriver'
   gem 'shoulda-matchers', '~> 4.0'
 end
-gem "cssbundling-rails"
+
 gem 'faker'
