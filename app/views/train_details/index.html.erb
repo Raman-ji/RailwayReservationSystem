@@ -60,11 +60,11 @@
           <td><%= train.departure_time.strftime("%H:%M:%S")%></td>
           <td><%= (train.departure_time+(train.travel_time_hrs*60)).strftime("%H:%M:%S")%></td>
           <td><%= train.class_2a_count%></td>
-          <td><%= train.class_2a_price%> Rs</td>
+          <td><%= train.class_2a_price%> cent</td>
           <td><%= train.class_1a_count%></td>
-          <td><%= train.class_1a_price%> Rs</td>
+          <td><%= train.class_1a_price%> cent</td>
           <td><%= train.class_general_count%></td>
-          <td><%= train.class_general_price%> Rs</td>
+          <td><%= train.class_general_price%> cent</td>
 
           </tr>
         <% end %>
